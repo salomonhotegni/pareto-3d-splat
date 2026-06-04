@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Environments and editors
+.env
+.venv/
+.idea/
+.vscode/
+
+# Downloaded baselines and generated outputs
+third_party/
+output/
+wandb/
+
+# Datasets and experiment artifacts
+data/*
+!data/README.md
+results/*
+!results/README.md
+
+# Native extension build products
+build/
+dist/
+*.so
+
+# Logs and temporary files
+*.log
+*.tmp

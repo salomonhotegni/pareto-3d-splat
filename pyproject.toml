@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pareto-3d-splat"
+version = "0.1.0"
+description = "Multi-objective 3D Gaussian Splatting for quality, speed, and memory trade-offs."
+readme = "README.md"
+requires-python = ">=3.10,<3.11"
+license = { file = "LICENSE" }
+authors = [
+  { name = "Salomon Hotegni" },
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

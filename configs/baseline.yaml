@@ -1,0 +1,32 @@
+experiment:
+  name: baseline
+  seed: 42
+
+paths:
+  baseline_root: third_party/gaussian-splatting
+  data_root: data
+  results_root: results
+
+training:
+  iterations: 30000
+  eval_split: true
+  save_iterations:
+    - 7000
+    - 30000
+  test_iterations:
+    - 7000
+    - 30000
+
+rendering:
+  skip_train: true
+
+metrics:
+  quality:
+    - psnr
+    - ssim
+    - lpips
+  efficiency:
+    - fps
+    - model_size_mb
+    - gaussian_count
+    - peak_gpu_memory_mb
