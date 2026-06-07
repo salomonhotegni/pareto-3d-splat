@@ -72,6 +72,13 @@ The prepared baseline training entry point for Session 4 is:
 make train-baseline
 ```
 
+After training, render the held-out test views with corrected NeRF Synthetic
+alpha compositing:
+
+```bash
+make render-baseline
+```
+
 See [docs/setup.md](docs/setup.md) for troubleshooting and machine-specific
 details, and [docs/dataset_notes.md](docs/dataset_notes.md) for dataset
 provenance and format checks.

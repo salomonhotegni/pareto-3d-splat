@@ -91,7 +91,8 @@ mkdir -p "${OUTPUT_DIR}"
 
 command=(
     "${PYTHON}"
-    "${BASELINE_DIR}/train.py"
+    "${ROOT_DIR}/scripts/run_graphdeco.py"
+    train.py
     --source_path "${DATASET_DIR}"
     --model_path "${OUTPUT_DIR}"
     --eval

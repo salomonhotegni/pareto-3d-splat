@@ -60,3 +60,4 @@ def test_training_wrapper_has_resume_and_checkpoint_retention() -> None:
     assert "--checkpoint_iterations" in script
     assert "CHECKPOINT_KEEP_COUNT=2" in script
     assert "prune_checkpoints" in script
+    assert "run_graphdeco.py" in script

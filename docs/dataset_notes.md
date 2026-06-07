@@ -56,9 +56,13 @@ The pinned GraphDeco loader uses `transforms_train.json` for optimization and
 does not consume the validation split. The split is retained to preserve the
 official dataset and support later ablations.
 
-The PNG alpha channel must be composited onto white, so training and rendering
-must use `--white_background`. Using the default black background changes the
-ground-truth appearance and invalidates comparisons.
+The PNG alpha channel must be composited onto white. The pinned baseline
+contains this compositing in its transform reader, but its camera loader
+reopens the original RGBA path and bypasses the converted image. Pareto-Splat
+therefore launches `train.py` and `render.py` through
+`scripts/run_graphdeco.py`, which applies the intended compositing at runtime
+without modifying the pinned checkout. Using the raw loader or the default
+black background changes the ground-truth appearance and invalidates metrics.
 
 The prepared Session 4 training command is:
 
