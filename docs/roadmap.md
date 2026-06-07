@@ -9,7 +9,7 @@ are defined in `docs/project_plan.md`.
 - [x] **Session 1:** Define the project motivation, objectives, and deliverables.
 - [x] **Session 2:** Create a reproducible environment, repository structure,
   pinned 3DGS baseline, and setup validation.
-- [ ] **Session 3:** Select, download, and document the first public dataset.
+- [x] **Session 3:** Select, download, and document the first public dataset.
 - [ ] **Session 4:** Train the first baseline and save renders, logs, metrics,
   checkpoint, model size, and a camera-path video.
 

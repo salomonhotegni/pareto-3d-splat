@@ -1,15 +1,28 @@
 experiment:
   name: baseline
-  seed: 42
+  seed: 0
 
 paths:
   baseline_root: third_party/gaussian-splatting
-  data_root: data
-  results_root: results
+  source_path: data/nerf_synthetic/lego
+  model_path: results/baseline/lego/seed_0
+
+dataset:
+  name: nerf_synthetic_lego
+  format: nerf_synthetic
+  train_views: 100
+  validation_views: 100
+  test_views: 200
+  image_size:
+    - 800
+    - 800
+  white_background: true
+  resolution: 1
 
 training:
   iterations: 30000
   eval_split: true
+  disable_viewer: true
   save_iterations:
     - 7000
     - 30000

@@ -11,8 +11,9 @@ and Pareto-front analysis.
 
 ## Project Status
 
-**Week 1 is complete.** The next milestone is **Week 2, Session 3: select,
-download, and validate the first public dataset**. See
+**Week 2, Session 3 is complete.** The NeRF Synthetic Lego scene now has a
+checksum-pinned download and validation workflow. The next milestone is
+**Session 4: train and render the first baseline**. See
 [the roadmap](docs/roadmap.md) for the complete 12-week plan.
 
 ## Target System
@@ -58,8 +59,22 @@ make install
 make check
 ```
 
+Download and validate the first dataset:
+
+```bash
+make dataset
+make check-data
+```
+
+The prepared baseline training entry point for Session 4 is:
+
+```bash
+make train-baseline
+```
+
 See [docs/setup.md](docs/setup.md) for troubleshooting and machine-specific
-details.
+details, and [docs/dataset_notes.md](docs/dataset_notes.md) for dataset
+provenance and format checks.
 
 ## Repository Layout
 

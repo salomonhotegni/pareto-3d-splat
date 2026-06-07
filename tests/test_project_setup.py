@@ -16,6 +16,9 @@ def test_baseline_config_contains_core_metrics() -> None:
     config_path = ROOT_DIR / "configs" / "baseline.yaml"
     config = yaml.safe_load(config_path.read_text(encoding="utf-8"))
 
+    assert config["experiment"]["seed"] == 0
+    assert config["dataset"]["name"] == "nerf_synthetic_lego"
+    assert config["dataset"]["white_background"] is True
     assert config["training"]["eval_split"] is True
     assert set(config["metrics"]["quality"]) == {"psnr", "ssim", "lpips"}
     assert set(config["metrics"]["efficiency"]) == {
