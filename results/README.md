@@ -13,6 +13,9 @@ results/baseline/lego/seed_0/
 ```
 
 The directory contains the baseline configuration snapshot, TensorBoard event
-file, training log, input point cloud, camera metadata, and saved Gaussian
-point clouds. Later rendering and evaluation steps will add held-out renders
-and metric files beneath the same run directory.
+file, input point cloud, camera metadata, saved Gaussian point clouds, and the
+two newest resumable checkpoints. Each training or resume attempt has a
+timestamped `attempts/` directory containing its exact command, environment
+metadata, dataset checksums, log, duration, and exit status. Later rendering
+and evaluation steps will add held-out renders and metric files beneath the
+same run directory.

@@ -73,14 +73,37 @@ and 30,000 iterations, disables the network viewer, and writes the run to:
 ```text
 results/baseline/lego/seed_0/
 ├── cfg_args
-├── train.log
 ├── events.out.tfevents.*
 ├── input.ply
 ├── cameras.json
+├── chkpnt25000.pth
+├── chkpnt30000.pth
+├── attempts/
+│   └── <UTC timestamp>/
+│       ├── baseline.yaml
+│       ├── command.sh
+│       ├── conda-explicit.txt
+│       ├── dataset_checksums.sha256
+│       ├── system.txt
+│       ├── status.txt
+│       └── train.log
 └── point_cloud/
     ├── iteration_7000/point_cloud.ply
     └── iteration_30000/point_cloud.ply
 ```
+
+Resumable checkpoints are created every 5,000 iterations. A background
+retention task keeps only the newest two checkpoint files to bound disk usage.
+Resume an interrupted run from one of those files with:
+
+```bash
+bash scripts/train_baseline.sh \
+    --resume results/baseline/lego/seed_0/chkpnt15000.pth
+```
+
+The upstream checkpoint captures model and optimizer state, but not every
+random-number-generator state. Resuming is suitable for recovery, although it
+is not guaranteed to be bit-for-bit identical to uninterrupted training.
 
 The official baseline initializes Python, NumPy, and PyTorch with seed `0`;
 `configs/baseline.yaml` records that implementation-defined seed.

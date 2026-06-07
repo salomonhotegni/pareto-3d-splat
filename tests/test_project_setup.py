@@ -20,6 +20,15 @@ def test_baseline_config_contains_core_metrics() -> None:
     assert config["dataset"]["name"] == "nerf_synthetic_lego"
     assert config["dataset"]["white_background"] is True
     assert config["training"]["eval_split"] is True
+    assert config["training"]["checkpoint_iterations"] == [
+        5000,
+        10000,
+        15000,
+        20000,
+        25000,
+        30000,
+    ]
+    assert config["training"]["checkpoint_retention"] == 2
     assert set(config["metrics"]["quality"]) == {"psnr", "ssim", "lpips"}
     assert set(config["metrics"]["efficiency"]) == {
         "fps",
@@ -40,3 +49,14 @@ def test_baseline_is_pinned_to_a_commit() -> None:
     commit = settings["BASELINE_COMMIT"]
     assert len(commit) == 40
     assert all(character in "0123456789abcdef" for character in commit)
+
+
+def test_training_wrapper_has_resume_and_checkpoint_retention() -> None:
+    script = (ROOT_DIR / "scripts" / "train_baseline.sh").read_text(
+        encoding="utf-8"
+    )
+
+    assert "--start_checkpoint" in script
+    assert "--checkpoint_iterations" in script
+    assert "CHECKPOINT_KEEP_COUNT=2" in script
+    assert "prune_checkpoints" in script

@@ -29,6 +29,14 @@ training:
   test_iterations:
     - 7000
     - 30000
+  checkpoint_iterations:
+    - 5000
+    - 10000
+    - 15000
+    - 20000
+    - 25000
+    - 30000
+  checkpoint_retention: 2
 
 rendering:
   skip_train: true
