@@ -79,6 +79,12 @@ alpha compositing:
 make render-baseline
 ```
 
+Create a labeled side-by-side orbit video:
+
+```bash
+make comparison-video
+```
+
 See [docs/setup.md](docs/setup.md) for troubleshooting and machine-specific
 details, and [docs/dataset_notes.md](docs/dataset_notes.md) for dataset
 provenance and format checks.

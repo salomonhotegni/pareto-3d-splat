@@ -61,3 +61,17 @@ def test_training_wrapper_has_resume_and_checkpoint_retention() -> None:
     assert "CHECKPOINT_KEEP_COUNT=2" in script
     assert "prune_checkpoints" in script
     assert "run_graphdeco.py" in script
+
+
+def test_comparison_video_has_expected_layout() -> None:
+    script = (ROOT_DIR / "scripts" / "create_comparison_video.sh").read_text(
+        encoding="utf-8"
+    )
+
+    assert "FRAME_COUNT=200" in script
+    assert "FRAME_RATE=30" in script
+    assert "Ground Truth" in script
+    assert "3DGS Render" in script
+    assert "hstack=inputs=2" in script
+    assert "libx264" in script
+    assert "resolve_media_tool" in script

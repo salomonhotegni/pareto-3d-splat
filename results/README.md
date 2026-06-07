@@ -19,3 +19,13 @@ timestamped `attempts/` directory containing its exact command, environment
 metadata, dataset checksums, log, duration, and exit status. Later rendering
 and evaluation steps will add held-out renders and metric files beneath the
 same run directory.
+
+After rendering the held-out test orbit, create a labeled ground-truth versus
+3DGS comparison video with:
+
+```bash
+make comparison-video
+```
+
+The generated MP4 and its `ffprobe` metadata are stored under
+`results/baseline/lego/seed_0/videos/`.
