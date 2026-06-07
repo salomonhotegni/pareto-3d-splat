@@ -2,7 +2,7 @@ SHELL := /bin/bash
 
 CONDA_ENV ?= pareto3dsplat
 
-.PHONY: env baseline install dataset check-data train-baseline render-baseline evaluate-baseline comparison-video check check-core test
+.PHONY: env baseline install dataset check-data train-baseline render-baseline evaluate-baseline profile-baseline comparison-video check check-core test
 
 env:
 	conda env update --name $(CONDA_ENV) --file environment.yml --prune
@@ -27,6 +27,9 @@ render-baseline:
 
 evaluate-baseline:
 	conda run --no-capture-output -n $(CONDA_ENV) bash scripts/evaluate_baseline.sh
+
+profile-baseline:
+	conda run --no-capture-output -n $(CONDA_ENV) bash scripts/profile_baseline.sh
 
 comparison-video:
 	conda run --no-capture-output -n $(CONDA_ENV) bash scripts/create_comparison_video.sh

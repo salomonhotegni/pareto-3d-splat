@@ -11,10 +11,28 @@ and Pareto-front analysis.
 
 ## Project Status
 
-**Week 2, Session 3 is complete.** The NeRF Synthetic Lego scene now has a
-checksum-pinned download and validation workflow. The next milestone is
-**Session 4: train and render the first baseline**. See
-[the roadmap](docs/roadmap.md) for the complete 12-week plan.
+**Sessions 4-6 are complete.** The first corrected NeRF Synthetic Lego baseline
+has been trained, rendered, evaluated, and profiled. The next milestone is
+**Session 7: configuration-driven training and evaluation workflows**. See
+[the baseline report](docs/baseline_results.md) for methodology and detailed
+results, and [the roadmap](docs/roadmap.md) for the complete 12-week plan.
+
+## Baseline Results
+
+| Quality / efficiency metric | Result |
+| --- | ---: |
+| PSNR | 35.9166 dB |
+| SSIM | 0.983729 |
+| LPIPS-VGG | 0.019002 |
+| Renderer throughput | 282.98 FPS |
+| Mean render latency | 3.534 ms |
+| Gaussian count | 299,799 |
+| Serialized model size | 70.91 MiB |
+| Peak allocated GPU memory | 282.92 MiB |
+
+Quality metrics use all 200 held-out 800 x 800 test views. Renderer throughput
+uses 600 CUDA-event measurements on an NVIDIA A100-SXM4-40GB and excludes
+image encoding and disk writes.
 
 ## Target System
 
@@ -66,7 +84,7 @@ make dataset
 make check-data
 ```
 
-The prepared baseline training entry point for Session 4 is:
+Train the baseline:
 
 ```bash
 make train-baseline
@@ -83,6 +101,12 @@ Evaluate all 200 held-out views with PSNR, SSIM, and LPIPS-VGG:
 
 ```bash
 make evaluate-baseline
+```
+
+Profile renderer-only FPS, latency, GPU memory, Gaussian count, and model size:
+
+```bash
+make profile-baseline
 ```
 
 Create a labeled side-by-side orbit video:

@@ -6,6 +6,7 @@ import yaml
 
 from pareto_splat import __version__
 from pareto_splat.metrics import MetricInputError, matched_image_paths, psnr, ssim
+from pareto_splat.profiling import read_ply_vertex_count, summarize_latencies
 
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
@@ -112,3 +113,42 @@ def test_evaluation_workflow_uses_all_test_views_and_lpips_vgg() -> None:
     assert "normalize=True" in evaluator
     assert "--expected-count 200" in wrapper
     assert "--device auto" in wrapper
+
+
+def test_ply_vertex_count_is_read_from_header(tmp_path: Path) -> None:
+    point_cloud = tmp_path / "point_cloud.ply"
+    point_cloud.write_bytes(
+        b"ply\n"
+        b"format binary_little_endian 1.0\n"
+        b"element vertex 299799\n"
+        b"property float x\n"
+        b"end_header\n"
+    )
+
+    assert read_ply_vertex_count(point_cloud) == 299_799
+
+
+def test_latency_summary_reports_fps_and_interpolated_p95() -> None:
+    summary = summarize_latencies([1.0, 2.0, 3.0, 4.0, 5.0])
+
+    assert summary["mean_ms"] == pytest.approx(3.0)
+    assert summary["median_ms"] == pytest.approx(3.0)
+    assert summary["p95_ms"] == pytest.approx(4.8)
+    assert summary["frames_per_second"] == pytest.approx(1000.0 / 3.0)
+
+
+def test_profiling_workflow_excludes_io_and_gpu_reference_images() -> None:
+    profiler = (ROOT_DIR / "scripts" / "profile_baseline.py").read_text(
+        encoding="utf-8"
+    )
+    wrapper = (ROOT_DIR / "scripts" / "profile_baseline.sh").read_text(
+        encoding="utf-8"
+    )
+
+    assert 'data_device="cpu"' in profiler
+    assert "torch.cuda.Event" in profiler
+    assert "torch.cuda.reset_peak_memory_stats()" in profiler
+    assert "save_image" not in profiler
+    assert "--expected-view-count 200" in wrapper
+    assert "--warmup-views 10" in wrapper
+    assert "--repetitions 3" in wrapper

@@ -10,13 +10,13 @@ are defined in `docs/project_plan.md`.
 - [x] **Session 2:** Create a reproducible environment, repository structure,
   pinned 3DGS baseline, and setup validation.
 - [x] **Session 3:** Select, download, and document the first public dataset.
-- [ ] **Session 4:** Train the first baseline and save renders, logs, metrics,
+- [x] **Session 4:** Train the first baseline and save renders, logs, metrics,
   checkpoint, model size, and a camera-path video.
 
 ## Phase 2: Evaluation and Reproducibility
 
-- [ ] **Session 5:** Evaluate PSNR, SSIM, LPIPS, Gaussian count, and model size.
-- [ ] **Session 6:** Profile FPS, render latency, and GPU memory.
+- [x] **Session 5:** Evaluate PSNR, SSIM, LPIPS, Gaussian count, and model size.
+- [x] **Session 6:** Profile FPS, render latency, and GPU memory.
 - [ ] **Session 7:** Refactor training and evaluation into configuration-driven
   workflows.
 - [ ] **Session 8:** Run the clean baseline workflow on a second scene.
