@@ -1,8 +1,11 @@
 from pathlib import Path
 
+import pytest
+import torch
 import yaml
 
 from pareto_splat import __version__
+from pareto_splat.metrics import MetricInputError, matched_image_paths, psnr, ssim
 
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
@@ -75,3 +78,37 @@ def test_comparison_video_has_expected_layout() -> None:
     assert "hstack=inputs=2" in script
     assert "libx264" in script
     assert "resolve_media_tool" in script
+
+
+def test_identical_image_quality_metrics() -> None:
+    image = torch.rand(1, 3, 24, 24)
+
+    assert torch.isinf(psnr(image, image)).all()
+    assert ssim(image, image).item() == pytest.approx(1.0, abs=1e-6)
+
+
+def test_metric_image_pairs_require_matching_names(tmp_path: Path) -> None:
+    render_dir = tmp_path / "renders"
+    ground_truth_dir = tmp_path / "gt"
+    render_dir.mkdir()
+    ground_truth_dir.mkdir()
+    (render_dir / "00000.png").touch()
+    (ground_truth_dir / "00001.png").touch()
+
+    with pytest.raises(MetricInputError, match="missing renders"):
+        matched_image_paths(render_dir, ground_truth_dir)
+
+
+def test_evaluation_workflow_uses_all_test_views_and_lpips_vgg() -> None:
+    evaluator = (ROOT_DIR / "scripts" / "evaluate_baseline.py").read_text(
+        encoding="utf-8"
+    )
+    wrapper = (ROOT_DIR / "scripts" / "evaluate_baseline.sh").read_text(
+        encoding="utf-8"
+    )
+
+    assert 'net="vgg"' in evaluator
+    assert 'version="0.1"' in evaluator
+    assert "normalize=True" in evaluator
+    assert "--expected-count 200" in wrapper
+    assert "--device auto" in wrapper

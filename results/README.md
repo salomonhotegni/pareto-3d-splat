@@ -29,3 +29,12 @@ make comparison-video
 
 The generated MP4 and its `ffprobe` metadata are stored under
 `results/baseline/lego/seed_0/videos/`.
+
+Evaluate all 200 rendered test views with:
+
+```bash
+make evaluate-baseline
+```
+
+Aggregate metrics, per-view metrics, the exact command, and the evaluation log
+are stored under `results/baseline/lego/seed_0/metrics/ours_30000/`.

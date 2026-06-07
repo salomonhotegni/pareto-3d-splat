@@ -79,6 +79,12 @@ alpha compositing:
 make render-baseline
 ```
 
+Evaluate all 200 held-out views with PSNR, SSIM, and LPIPS-VGG:
+
+```bash
+make evaluate-baseline
+```
+
 Create a labeled side-by-side orbit video:
 
 ```bash
