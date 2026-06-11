@@ -6,6 +6,9 @@ from PIL import Image
 
 from pareto_splat.datasets.nerf_synthetic import (
     DatasetValidationError,
+    OFFICIAL_NERF_SYNTHETIC_IMAGE_MODE,
+    OFFICIAL_NERF_SYNTHETIC_IMAGE_SIZE,
+    OFFICIAL_NERF_SYNTHETIC_SPLIT_COUNTS,
     validate_nerf_synthetic_dataset,
 )
 
@@ -61,3 +64,12 @@ def test_validator_rejects_missing_referenced_image(tmp_path: Path) -> None:
     with pytest.raises(DatasetValidationError, match="missing image"):
         validate_nerf_synthetic_dataset(tmp_path)
 
+
+def test_official_contract_applies_to_all_synthetic_scenes() -> None:
+    assert OFFICIAL_NERF_SYNTHETIC_SPLIT_COUNTS == {
+        "train": 100,
+        "val": 100,
+        "test": 200,
+    }
+    assert OFFICIAL_NERF_SYNTHETIC_IMAGE_SIZE == (800, 800)
+    assert OFFICIAL_NERF_SYNTHETIC_IMAGE_MODE == "RGBA"

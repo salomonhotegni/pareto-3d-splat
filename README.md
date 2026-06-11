@@ -85,6 +85,13 @@ make dataset
 make check-data
 ```
 
+Prepare the second NeRF Synthetic Drums scene:
+
+```bash
+make dataset-drums
+make check-data-drums
+```
+
 Train the baseline:
 
 ```bash

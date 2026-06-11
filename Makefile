@@ -3,7 +3,7 @@ SHELL := /bin/bash
 CONDA_ENV ?= pareto3dsplat
 CONFIG ?= configs/baseline.yaml
 
-.PHONY: env baseline install dataset check-data train-baseline render-baseline evaluate-baseline profile-baseline comparison-video check check-core test
+.PHONY: env baseline install dataset dataset-lego dataset-drums check-data check-data-lego check-data-drums train-baseline render-baseline evaluate-baseline profile-baseline comparison-video check check-core test
 
 env:
 	conda env update --name $(CONDA_ENV) --file environment.yml --prune
@@ -14,11 +14,21 @@ baseline:
 install: baseline
 	conda run --no-capture-output -n $(CONDA_ENV) bash scripts/install_baseline.sh
 
-dataset:
+dataset: dataset-lego
+
+dataset-lego:
 	conda run --no-capture-output -n $(CONDA_ENV) bash scripts/download_lego_dataset.sh
 
-check-data:
+dataset-drums:
+	conda run --no-capture-output -n $(CONDA_ENV) bash scripts/download_drums_dataset.sh
+
+check-data: check-data-lego
+
+check-data-lego:
 	conda run --no-capture-output -n $(CONDA_ENV) python scripts/validate_nerf_synthetic.py
+
+check-data-drums:
+	conda run --no-capture-output -n $(CONDA_ENV) python scripts/validate_nerf_synthetic.py data/nerf_synthetic/drums
 
 train-baseline:
 	conda run --no-capture-output -n $(CONDA_ENV) bash scripts/train_baseline.sh --config $(CONFIG)

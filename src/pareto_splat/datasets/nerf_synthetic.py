@@ -11,13 +11,13 @@ from typing import Mapping
 from PIL import Image, UnidentifiedImageError
 
 
-OFFICIAL_LEGO_SPLIT_COUNTS = {
+OFFICIAL_NERF_SYNTHETIC_SPLIT_COUNTS = {
     "train": 100,
     "val": 100,
     "test": 200,
 }
-OFFICIAL_LEGO_IMAGE_SIZE = (800, 800)
-OFFICIAL_LEGO_IMAGE_MODE = "RGBA"
+OFFICIAL_NERF_SYNTHETIC_IMAGE_SIZE = (800, 800)
+OFFICIAL_NERF_SYNTHETIC_IMAGE_MODE = "RGBA"
 
 
 class DatasetValidationError(ValueError):
@@ -228,4 +228,3 @@ def validate_nerf_synthetic_dataset(
         seen_paths.update(summary.image_paths)
 
     return summaries
-

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the official NeRF Synthetic Lego dataset."""
+"""Validate an official NeRF Synthetic scene."""
 
 from __future__ import annotations
 
@@ -14,9 +14,9 @@ sys.path.insert(0, str(ROOT_DIR / "src"))
 
 from pareto_splat.datasets.nerf_synthetic import (  # noqa: E402
     DatasetValidationError,
-    OFFICIAL_LEGO_IMAGE_MODE,
-    OFFICIAL_LEGO_IMAGE_SIZE,
-    OFFICIAL_LEGO_SPLIT_COUNTS,
+    OFFICIAL_NERF_SYNTHETIC_IMAGE_MODE,
+    OFFICIAL_NERF_SYNTHETIC_IMAGE_SIZE,
+    OFFICIAL_NERF_SYNTHETIC_SPLIT_COUNTS,
     validate_nerf_synthetic_dataset,
 )
 
@@ -40,16 +40,16 @@ def main() -> int:
     try:
         summaries = validate_nerf_synthetic_dataset(
             args.dataset,
-            expected_split_counts=OFFICIAL_LEGO_SPLIT_COUNTS,
-            expected_image_size=OFFICIAL_LEGO_IMAGE_SIZE,
-            expected_image_mode=OFFICIAL_LEGO_IMAGE_MODE,
+            expected_split_counts=OFFICIAL_NERF_SYNTHETIC_SPLIT_COUNTS,
+            expected_image_size=OFFICIAL_NERF_SYNTHETIC_IMAGE_SIZE,
+            expected_image_mode=OFFICIAL_NERF_SYNTHETIC_IMAGE_MODE,
         )
     except DatasetValidationError as error:
         print(f"Dataset validation failed: {error}", file=sys.stderr)
         return 1
 
     angle_degrees = math.degrees(summaries[0].camera_angle_x)
-    print(f"Validated NeRF Synthetic Lego dataset: {args.dataset.resolve()}")
+    print(f"Validated NeRF Synthetic scene: {args.dataset.resolve()}")
     for summary in summaries:
         print(f"  {summary.name}: {summary.frame_count} cameras")
     print(
@@ -62,4 +62,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

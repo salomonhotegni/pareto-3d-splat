@@ -175,6 +175,23 @@ def test_experiment_config_drives_paths_and_workflow_settings() -> None:
     assert config.profiling_repetitions == 3
 
 
+def test_drums_config_selects_second_scene() -> None:
+    config = load_experiment_config(
+        ROOT_DIR / "configs" / "drums.yaml",
+        ROOT_DIR,
+    )
+
+    assert config.dataset_name == "nerf_synthetic_drums"
+    assert config.source_path == (
+        ROOT_DIR / "data" / "nerf_synthetic" / "drums"
+    )
+    assert config.model_path == (
+        ROOT_DIR / "results" / "baseline" / "drums" / "seed_0"
+    )
+    assert config.iterations == 30_000
+    assert config.test_views == 200
+
+
 def test_experiment_config_rejects_rendering_unsaved_iteration(
     tmp_path: Path,
 ) -> None:
