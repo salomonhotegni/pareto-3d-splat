@@ -69,6 +69,8 @@ def main() -> int:
         arguments.ground_truth,
         expected_count=arguments.expected_count,
     )
+    sample_image = load_rgb_tensor(pairs[0][0])
+    image_size = [int(sample_image.shape[3]), int(sample_image.shape[2])]
     arguments.output_dir.mkdir(parents=True, exist_ok=True)
 
     print(f"Evaluating {len(pairs)} test-view pairs on {device}")
@@ -116,7 +118,7 @@ def main() -> int:
         "schema_version": 1,
         "created_utc": datetime.now(timezone.utc).isoformat(),
         "image_pair_count": len(pairs),
-        "image_size": [800, 800],
+        "image_size": image_size,
         "device": str(device),
         "metrics": {
             "psnr": summarize(psnr_values),

@@ -9,34 +9,40 @@ from pathlib import Path
 
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
-BASELINE_DIR = ROOT_DIR / "third_party" / "gaussian-splatting"
 ALLOWED_ENTRY_POINTS = {"render.py", "train.py"}
 
 
 def main() -> int:
-    if len(sys.argv) < 2 or sys.argv[1] not in ALLOWED_ENTRY_POINTS:
+    arguments = sys.argv[1:]
+    baseline_dir = ROOT_DIR / "third_party" / "gaussian-splatting"
+    if len(arguments) >= 2 and arguments[0] == "--baseline-root":
+        baseline_dir = Path(arguments[1]).resolve()
+        arguments = arguments[2:]
+
+    if not arguments or arguments[0] not in ALLOWED_ENTRY_POINTS:
         choices = ", ".join(sorted(ALLOWED_ENTRY_POINTS))
         print(
-            f"usage: {Path(sys.argv[0]).name} <{choices}> [arguments...]",
+            f"usage: {Path(sys.argv[0]).name} "
+            f"[--baseline-root PATH] <{choices}> [arguments...]",
             file=sys.stderr,
         )
         return 2
 
-    entry_point = sys.argv[1]
-    entry_path = BASELINE_DIR / entry_point
+    entry_point = arguments[0]
+    entry_path = baseline_dir / entry_point
     if not entry_path.is_file():
         print(f"error: baseline entry point not found: {entry_path}", file=sys.stderr)
         return 1
 
     sys.path.insert(0, str(ROOT_DIR / "src"))
-    sys.path.insert(0, str(BASELINE_DIR))
+    sys.path.insert(0, str(baseline_dir))
 
     from pareto_splat.graphdeco_compat import (
         install_nerf_synthetic_compositing_patch,
     )
 
     install_nerf_synthetic_compositing_patch()
-    sys.argv = [str(entry_path), *sys.argv[2:]]
+    sys.argv = [str(entry_path), *arguments[1:]]
     runpy.run_path(str(entry_path), run_name="__main__")
     return 0
 

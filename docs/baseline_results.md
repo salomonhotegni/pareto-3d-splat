@@ -115,6 +115,11 @@ make profile-baseline
 make comparison-video
 ```
 
+The first four commands load `configs/baseline.yaml`. A different scene or
+experiment can use the same scripts by passing `CONFIG=path/to/config.yaml`.
+See [`experiment_workflow.md`](experiment_workflow.md) for the configuration
+contract and direct script invocations.
+
 Generated experiment artifacts remain ignored by Git. The reusable scripts,
 configuration, tests, and this summary are version controlled.
 

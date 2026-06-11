@@ -16,9 +16,7 @@ from tqdm import tqdm
 
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
-BASELINE_DIR = ROOT_DIR / "third_party" / "gaussian-splatting"
 sys.path.insert(0, str(ROOT_DIR / "src"))
-sys.path.insert(0, str(BASELINE_DIR))
 
 from pareto_splat.graphdeco_compat import (  # noqa: E402
     install_nerf_synthetic_compositing_patch,
@@ -41,6 +39,7 @@ MODEL_TENSOR_NAMES = (
 
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--baseline-root", required=True, type=Path)
     parser.add_argument("--model-path", required=True, type=Path)
     parser.add_argument("--source-path", required=True, type=Path)
     parser.add_argument("--output-dir", required=True, type=Path)
@@ -48,6 +47,18 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("--expected-view-count", type=int, default=200)
     parser.add_argument("--warmup-views", type=int, default=10)
     parser.add_argument("--repetitions", type=int, default=3)
+    parser.add_argument("--resolution", type=int, default=1)
+    parser.add_argument("--sh-degree", type=int, default=3)
+    parser.add_argument(
+        "--data-device",
+        choices=("cpu", "cuda"),
+        default="cpu",
+    )
+    parser.add_argument(
+        "--background",
+        choices=("black", "white"),
+        default="white",
+    )
     return parser.parse_args()
 
 
@@ -69,6 +80,12 @@ def model_parameter_bytes(gaussians: object) -> int:
 
 def main() -> int:
     arguments = parse_arguments()
+    baseline_root = arguments.baseline_root.resolve()
+    if not baseline_root.is_dir():
+        raise FileNotFoundError(
+            f"baseline directory not found: {baseline_root}"
+        )
+    sys.path.insert(0, str(baseline_root))
     if not torch.cuda.is_available():
         raise RuntimeError("CUDA is required for GraphDeCo rendering profiling")
     if arguments.warmup_views <= 0:
@@ -103,15 +120,15 @@ def main() -> int:
         separate_sh = True
 
     dataset = SimpleNamespace(
-        sh_degree=3,
+        sh_degree=arguments.sh_degree,
         source_path=str(source_path),
         model_path=str(model_path),
         images="images",
         depths="",
-        resolution=1,
-        white_background=True,
+        resolution=arguments.resolution,
+        white_background=arguments.background == "white",
         train_test_exp=False,
-        data_device="cpu",
+        data_device=arguments.data_device,
         eval=True,
     )
     pipeline = SimpleNamespace(
@@ -146,7 +163,9 @@ def main() -> int:
         )
 
     background = torch.tensor(
-        [1.0, 1.0, 1.0],
+        [1.0, 1.0, 1.0]
+        if arguments.background == "white"
+        else [0.0, 0.0, 0.0],
         dtype=torch.float32,
         device="cuda",
     )

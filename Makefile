@@ -1,6 +1,7 @@
 SHELL := /bin/bash
 
 CONDA_ENV ?= pareto3dsplat
+CONFIG ?= configs/baseline.yaml
 
 .PHONY: env baseline install dataset check-data train-baseline render-baseline evaluate-baseline profile-baseline comparison-video check check-core test
 
@@ -20,16 +21,16 @@ check-data:
 	conda run --no-capture-output -n $(CONDA_ENV) python scripts/validate_nerf_synthetic.py
 
 train-baseline:
-	conda run --no-capture-output -n $(CONDA_ENV) bash scripts/train_baseline.sh
+	conda run --no-capture-output -n $(CONDA_ENV) bash scripts/train_baseline.sh --config $(CONFIG)
 
 render-baseline:
-	conda run --no-capture-output -n $(CONDA_ENV) bash scripts/render_baseline.sh
+	conda run --no-capture-output -n $(CONDA_ENV) bash scripts/render_baseline.sh --config $(CONFIG)
 
 evaluate-baseline:
-	conda run --no-capture-output -n $(CONDA_ENV) bash scripts/evaluate_baseline.sh
+	conda run --no-capture-output -n $(CONDA_ENV) bash scripts/evaluate_baseline.sh --config $(CONFIG)
 
 profile-baseline:
-	conda run --no-capture-output -n $(CONDA_ENV) bash scripts/profile_baseline.sh
+	conda run --no-capture-output -n $(CONDA_ENV) bash scripts/profile_baseline.sh --config $(CONFIG)
 
 comparison-video:
 	conda run --no-capture-output -n $(CONDA_ENV) bash scripts/create_comparison_video.sh

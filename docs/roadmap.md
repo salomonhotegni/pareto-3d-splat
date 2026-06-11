@@ -17,7 +17,7 @@ are defined in `docs/project_plan.md`.
 
 - [x] **Session 5:** Evaluate PSNR, SSIM, LPIPS, Gaussian count, and model size.
 - [x] **Session 6:** Profile FPS, render latency, and GPU memory.
-- [ ] **Session 7:** Refactor training and evaluation into configuration-driven
+- [x] **Session 7:** Refactor training and evaluation into configuration-driven
   workflows.
 - [ ] **Session 8:** Run the clean baseline workflow on a second scene.
 

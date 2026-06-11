@@ -11,9 +11,10 @@ and Pareto-front analysis.
 
 ## Project Status
 
-**Sessions 4-6 are complete.** The first corrected NeRF Synthetic Lego baseline
-has been trained, rendered, evaluated, and profiled. The next milestone is
-**Session 7: configuration-driven training and evaluation workflows**. See
+**Sessions 4-7 are complete.** The first corrected NeRF Synthetic Lego baseline
+has been trained, rendered, evaluated, and profiled, and the workflow is now
+configuration-driven. The next milestone is **Session 8: run the clean baseline
+workflow on a second scene**. See
 [the baseline report](docs/baseline_results.md) for methodology and detailed
 results, and [the roadmap](docs/roadmap.md) for the complete 12-week plan.
 
@@ -88,6 +89,16 @@ Train the baseline:
 
 ```bash
 make train-baseline
+```
+
+All experiment-specific settings are loaded from `configs/baseline.yaml`.
+Select another configuration without editing scripts:
+
+```bash
+make train-baseline CONFIG=configs/another_scene.yaml
+make render-baseline CONFIG=configs/another_scene.yaml
+make evaluate-baseline CONFIG=configs/another_scene.yaml
+make profile-baseline CONFIG=configs/another_scene.yaml
 ```
 
 After training, render the held-out test views with corrected NeRF Synthetic

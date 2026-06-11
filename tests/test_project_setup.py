@@ -5,6 +5,7 @@ import torch
 import yaml
 
 from pareto_splat import __version__
+from pareto_splat.config import ConfigError, load_experiment_config
 from pareto_splat.metrics import MetricInputError, matched_image_paths, psnr, ssim
 from pareto_splat.profiling import read_ply_vertex_count, summarize_latencies
 
@@ -59,12 +60,17 @@ def test_training_wrapper_has_resume_and_checkpoint_retention() -> None:
     script = (ROOT_DIR / "scripts" / "train_baseline.sh").read_text(
         encoding="utf-8"
     )
+    runner = (ROOT_DIR / "scripts" / "run_experiment.py").read_text(
+        encoding="utf-8"
+    )
 
-    assert "--start_checkpoint" in script
-    assert "--checkpoint_iterations" in script
-    assert "CHECKPOINT_KEEP_COUNT=2" in script
-    assert "prune_checkpoints" in script
-    assert "run_graphdeco.py" in script
+    assert "--config" in script
+    assert "run_experiment.py" in script
+    assert "--start_checkpoint" in runner
+    assert "--checkpoint_iterations" in runner
+    assert "checkpoint_retention" in runner
+    assert "prune_checkpoints" in runner
+    assert "run_graphdeco.py" in runner
 
 
 def test_comparison_video_has_expected_layout() -> None:
@@ -104,15 +110,15 @@ def test_evaluation_workflow_uses_all_test_views_and_lpips_vgg() -> None:
     evaluator = (ROOT_DIR / "scripts" / "evaluate_baseline.py").read_text(
         encoding="utf-8"
     )
-    wrapper = (ROOT_DIR / "scripts" / "evaluate_baseline.sh").read_text(
+    runner = (ROOT_DIR / "scripts" / "run_experiment.py").read_text(
         encoding="utf-8"
     )
 
     assert 'net="vgg"' in evaluator
     assert 'version="0.1"' in evaluator
     assert "normalize=True" in evaluator
-    assert "--expected-count 200" in wrapper
-    assert "--device auto" in wrapper
+    assert "config.test_views" in runner
+    assert "config.evaluation_device" in runner
 
 
 def test_ply_vertex_count_is_read_from_header(tmp_path: Path) -> None:
@@ -141,14 +147,46 @@ def test_profiling_workflow_excludes_io_and_gpu_reference_images() -> None:
     profiler = (ROOT_DIR / "scripts" / "profile_baseline.py").read_text(
         encoding="utf-8"
     )
-    wrapper = (ROOT_DIR / "scripts" / "profile_baseline.sh").read_text(
+    runner = (ROOT_DIR / "scripts" / "run_experiment.py").read_text(
         encoding="utf-8"
     )
 
-    assert 'data_device="cpu"' in profiler
+    assert "data_device=arguments.data_device" in profiler
     assert "torch.cuda.Event" in profiler
     assert "torch.cuda.reset_peak_memory_stats()" in profiler
     assert "save_image" not in profiler
-    assert "--expected-view-count 200" in wrapper
-    assert "--warmup-views 10" in wrapper
-    assert "--repetitions 3" in wrapper
+    assert "config.test_views" in runner
+    assert "config.profiling_warmup_views" in runner
+    assert "config.profiling_repetitions" in runner
+
+
+def test_experiment_config_drives_paths_and_workflow_settings() -> None:
+    config = load_experiment_config(
+        ROOT_DIR / "configs" / "baseline.yaml",
+        ROOT_DIR,
+    )
+
+    assert config.source_path == ROOT_DIR / "data" / "nerf_synthetic" / "lego"
+    assert config.model_path == ROOT_DIR / "results" / "baseline" / "lego" / "seed_0"
+    assert config.iterations == 30_000
+    assert config.render_iteration == 30_000
+    assert config.test_views == 200
+    assert config.profiling_warmup_views == 10
+    assert config.profiling_repetitions == 3
+
+
+def test_experiment_config_rejects_rendering_unsaved_iteration(
+    tmp_path: Path,
+) -> None:
+    raw = yaml.safe_load(
+        (ROOT_DIR / "configs" / "baseline.yaml").read_text(encoding="utf-8")
+    )
+    raw["rendering"]["iteration"] = 29_999
+    config_path = tmp_path / "invalid.yaml"
+    config_path.write_text(yaml.safe_dump(raw), encoding="utf-8")
+
+    with pytest.raises(
+        ConfigError,
+        match="rendering.iteration must be present",
+    ):
+        load_experiment_config(config_path, ROOT_DIR)
