@@ -63,6 +63,9 @@ Outputs are stored under:
 results/baseline/drums/seed_0/
 ```
 
+The completed measurements are summarized in
+[`drums_baseline_results.md`](drums_baseline_results.md).
+
 ## License and Attribution
 
 The archive README attributes the Drums Blender model to Bryan Jones under

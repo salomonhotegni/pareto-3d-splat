@@ -11,12 +11,12 @@ and Pareto-front analysis.
 
 ## Project Status
 
-**Sessions 4-7 are complete.** The first corrected NeRF Synthetic Lego baseline
-has been trained, rendered, evaluated, and profiled, and the workflow is now
-configuration-driven. The next milestone is **Session 8: run the clean baseline
-workflow on a second scene**. See
-[the baseline report](docs/baseline_results.md) for methodology and detailed
-results, and [the roadmap](docs/roadmap.md) for the complete 12-week plan.
+**Sessions 4-8 are complete.** The clean baseline workflow has been run on
+NeRF Synthetic Lego and Drums. The next milestone is **Session 9: implement
+random, opacity-threshold, and top-k pruning**. See the
+[Lego baseline report](docs/baseline_results.md), the
+[Drums baseline report](docs/drums_baseline_results.md), and the
+[roadmap](docs/roadmap.md).
 
 ## Baseline Results
 
@@ -34,6 +34,11 @@ results, and [the roadmap](docs/roadmap.md) for the complete 12-week plan.
 Quality metrics use all 200 held-out 800 x 800 test views. Renderer throughput
 uses 600 CUDA-event measurements on an NVIDIA A100-SXM4-40GB and excludes
 image encoding and disk writes.
+
+The second Drums baseline reached 26.1724 dB PSNR, 0.955651 SSIM, and 0.043743
+LPIPS-VGG with 318,647 Gaussians. See
+[the Drums report](docs/drums_baseline_results.md) for its complete quality
+and efficiency profile.
 
 ## Target System
 

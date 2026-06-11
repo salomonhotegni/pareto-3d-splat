@@ -12,6 +12,12 @@ The first baseline run uses:
 results/baseline/lego/seed_0/
 ```
 
+The second scene run uses:
+
+```text
+results/baseline/drums/seed_0/
+```
+
 The directory contains the baseline configuration snapshot, TensorBoard event
 file, input point cloud, camera metadata, saved Gaussian point clouds, and the
 two newest resumable checkpoints. Each training or resume attempt has a
@@ -50,3 +56,6 @@ under `results/baseline/lego/seed_0/profile/ours_30000/`.
 
 The version-controlled summary of the first complete run is available in
 [`docs/baseline_results.md`](../docs/baseline_results.md).
+
+The second-scene summary is available in
+[`docs/drums_baseline_results.md`](../docs/drums_baseline_results.md).
