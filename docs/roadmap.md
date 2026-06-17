@@ -23,7 +23,7 @@ are defined in `docs/project_plan.md`.
 
 ## Phase 3: Pruning and Pareto Analysis
 
-- [ ] **Session 9:** Implement random, opacity-threshold, and top-k pruning.
+- [x] **Session 9:** Implement random, opacity-threshold, and top-k pruning.
 - [ ] **Session 10:** Evaluate pruning levels and plot quality-efficiency
   trade-offs.
 - [ ] **Session 11:** Formalize objectives and implement Pareto dominance and

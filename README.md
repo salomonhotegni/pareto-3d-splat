@@ -11,9 +11,11 @@ and Pareto-front analysis.
 
 ## Project Status
 
-**Sessions 4-8 are complete.** The clean baseline workflow has been run on
-NeRF Synthetic Lego and Drums. The next milestone is **Session 9: implement
-random, opacity-threshold, and top-k pruning**. See the
+**Sessions 4-9 are complete.** The clean baseline workflow has been run on
+NeRF Synthetic Lego and Drums, and post-training Gaussian pruning now supports
+random, opacity-threshold, and top-k strategies. The next milestone is
+**Session 10: evaluate pruning levels and plot quality-efficiency trade-offs**.
+See the
 [Lego baseline report](docs/baseline_results.md), the
 [Drums baseline report](docs/drums_baseline_results.md), and the
 [roadmap](docs/roadmap.md).
@@ -39,6 +41,8 @@ The second Drums baseline reached 26.1724 dB PSNR, 0.955651 SSIM, and 0.043743
 LPIPS-VGG with 318,647 Gaussians. See
 [the Drums report](docs/drums_baseline_results.md) for its complete quality
 and efficiency profile.
+
+Post-training pruning is documented in [docs/pruning.md](docs/pruning.md).
 
 ## Target System
 
