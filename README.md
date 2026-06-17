@@ -11,11 +11,11 @@ and Pareto-front analysis.
 
 ## Project Status
 
-**Sessions 4-9 are complete.** The clean baseline workflow has been run on
+**Sessions 4-10 are complete.** The clean baseline workflow has been run on
 NeRF Synthetic Lego and Drums, and post-training Gaussian pruning now supports
-random, opacity-threshold, and top-k strategies. The next milestone is
-**Session 10: evaluate pruning levels and plot quality-efficiency trade-offs**.
-See the
+random, opacity-threshold, and top-k strategies. The first Lego pruning study
+evaluated nine operating points and generated quality-efficiency trade-off
+plots. See the
 [Lego baseline report](docs/baseline_results.md), the
 [Drums baseline report](docs/drums_baseline_results.md), and the
 [roadmap](docs/roadmap.md).
@@ -42,7 +42,9 @@ LPIPS-VGG with 318,647 Gaussians. See
 [the Drums report](docs/drums_baseline_results.md) for its complete quality
 and efficiency profile.
 
-Post-training pruning is documented in [docs/pruning.md](docs/pruning.md).
+Post-training pruning is documented in [docs/pruning.md](docs/pruning.md), and
+the pruning study workflow and Session 10 results are documented in
+[docs/pruning_study.md](docs/pruning_study.md).
 
 ## Target System
 
@@ -140,6 +142,24 @@ Create a labeled side-by-side orbit video:
 
 ```bash
 make comparison-video
+```
+
+Create, render, evaluate, profile, and summarize the default Lego pruning study:
+
+```bash
+make pruning-study-prune
+make pruning-study-render
+make pruning-study-evaluate
+make pruning-study-profile
+make pruning-study-summarize
+```
+
+Restrict render/evaluate/profile stages to one pruning variant while iterating:
+
+```bash
+make pruning-study-render PRUNING_VARIANT=top_k_keep_050
+make pruning-study-evaluate PRUNING_VARIANT=top_k_keep_050
+make pruning-study-profile PRUNING_VARIANT=top_k_keep_050
 ```
 
 See [docs/setup.md](docs/setup.md) for troubleshooting and machine-specific

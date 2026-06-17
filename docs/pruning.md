@@ -79,3 +79,6 @@ python scripts/prune_gaussians.py \
 
 The output model can be rendered by pointing the experiment workflow at the
 pruned model directory while keeping the original scene dataset path.
+
+For the configured Session 10 grid over multiple pruning levels, use the
+workflow and results in [docs/pruning_study.md](pruning_study.md).
