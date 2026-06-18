@@ -9,9 +9,14 @@ from typing import Any
 
 import yaml
 
+from pareto_splat.pareto import QUALITY_EFFICIENCY_OBJECTIVES, annotate_pareto_ranks
+
 
 class PruningStudyError(ValueError):
     """Raised when pruning-study inputs are invalid."""
+
+
+PARETO_RANK_KEY = "pareto_rank"
 
 
 def _mapping(value: object, key: str) -> dict[str, Any]:
@@ -402,26 +407,40 @@ def write_summary_outputs(
     output_dir.mkdir(parents=True, exist_ok=True)
     json_path = output_dir / "summary.json"
     csv_path = output_dir / "summary.csv"
-    json_path.write_text(json.dumps(rows, indent=2) + "\n", encoding="utf-8")
+    annotated_rows = annotate_quality_efficiency_ranks(rows)
+    json_path.write_text(
+        json.dumps(annotated_rows, indent=2) + "\n",
+        encoding="utf-8",
+    )
 
     import pandas as pd
 
-    frame = pd.DataFrame(rows)
+    frame = pd.DataFrame(annotated_rows)
     frame.to_csv(csv_path, index=False)
     return json_path, csv_path
+
+
+def annotate_quality_efficiency_ranks(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Add Pareto ranks for the default quality-efficiency objective set."""
+
+    return annotate_pareto_ranks(
+        rows,
+        QUALITY_EFFICIENCY_OBJECTIVES,
+        rank_key=PARETO_RANK_KEY,
+    )
 
 
 def write_tradeoff_plots(
     rows: list[dict[str, Any]],
     output_dir: Path,
 ) -> tuple[Path, ...]:
-    """Write basic quality-efficiency trade-off scatter plots."""
+    """Write quality-efficiency scatter plots and Pareto front projections."""
 
     output_dir.mkdir(parents=True, exist_ok=True)
     import matplotlib.pyplot as plt
     import pandas as pd
 
-    frame = pd.DataFrame(rows)
+    frame = pd.DataFrame(annotate_quality_efficiency_ranks(rows))
     plot_specs = (
         ("gaussian_count", "psnr", "PSNR vs Gaussian Count", "psnr_vs_gaussians.png"),
         ("fps", "psnr", "PSNR vs FPS", "psnr_vs_fps.png"),
@@ -449,4 +468,113 @@ def write_tradeoff_plots(
         figure.savefig(path, dpi=160)
         plt.close(figure)
         paths.append(path)
+    paths.extend(write_pareto_plots(rows, output_dir))
+    return tuple(paths)
+
+
+def _plot_strategy_scatter(axis: Any, frame: Any, x_name: str, y_name: str) -> None:
+    for strategy, group in frame.groupby("strategy"):
+        axis.scatter(group[x_name], group[y_name], label=strategy)
+        for _, row in group.iterrows():
+            axis.annotate(
+                row["variant_id"],
+                (row[x_name], row[y_name]),
+                fontsize=7,
+                alpha=0.8,
+            )
+
+
+def _plot_rank_zero_projection(axis: Any, frame: Any, x_name: str, y_name: str) -> None:
+    front = frame[frame[PARETO_RANK_KEY] == 0].sort_values(x_name)
+    axis.plot(
+        front[x_name],
+        front[y_name],
+        color="black",
+        linewidth=1.5,
+        label="Pareto rank 0",
+    )
+    axis.scatter(
+        front[x_name],
+        front[y_name],
+        facecolors="none",
+        edgecolors="black",
+        linewidths=1.4,
+        s=90,
+    )
+
+
+def write_pareto_plots(
+    rows: list[dict[str, Any]],
+    output_dir: Path,
+) -> tuple[Path, ...]:
+    """Write 2D and 3D Pareto-front plots for quality-efficiency objectives."""
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    import matplotlib.pyplot as plt
+    import pandas as pd
+
+    frame = pd.DataFrame(annotate_quality_efficiency_ranks(rows))
+    paths: list[Path] = []
+    plot_specs = (
+        (
+            "fps",
+            "psnr",
+            "Pareto Front: PSNR vs FPS",
+            "pareto_psnr_vs_fps.png",
+            "FPS",
+            "PSNR",
+        ),
+        (
+            "serialized_mib",
+            "psnr",
+            "Pareto Front: PSNR vs Model Size",
+            "pareto_psnr_vs_size.png",
+            "Serialized model size (MiB)",
+            "PSNR",
+        ),
+    )
+    for x_name, y_name, title, filename, x_label, y_label in plot_specs:
+        figure, axis = plt.subplots(figsize=(7, 5))
+        _plot_strategy_scatter(axis, frame, x_name, y_name)
+        _plot_rank_zero_projection(axis, frame, x_name, y_name)
+        axis.set_title(title)
+        axis.set_xlabel(x_label)
+        axis.set_ylabel(y_label)
+        axis.grid(True, alpha=0.3)
+        axis.legend()
+        figure.tight_layout()
+        path = output_dir / filename
+        figure.savefig(path, dpi=160)
+        plt.close(figure)
+        paths.append(path)
+
+    figure = plt.figure(figsize=(8, 6))
+    axis = figure.add_subplot(111, projection="3d")
+    for strategy, group in frame.groupby("strategy"):
+        axis.scatter(
+            group["fps"],
+            group["serialized_mib"],
+            group["psnr"],
+            label=strategy,
+        )
+    front = frame[frame[PARETO_RANK_KEY] == 0].sort_values("fps")
+    axis.plot(
+        front["fps"],
+        front["serialized_mib"],
+        front["psnr"],
+        color="black",
+        linewidth=1.5,
+        label="Pareto rank 0",
+    )
+    axis.set_title("3D Pareto Front: PSNR, FPS, and Model Size")
+    axis.set_xlabel("FPS")
+    axis.set_ylabel("Serialized model size (MiB)")
+    axis.set_zlabel("PSNR")
+    axis.view_init(elev=22, azim=-55)
+    axis.legend()
+    figure.tight_layout()
+    path = output_dir / "pareto_psnr_fps_size_3d.png"
+    figure.savefig(path, dpi=160)
+    plt.close(figure)
+    paths.append(path)
     return tuple(paths)

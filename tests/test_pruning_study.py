@@ -9,6 +9,7 @@ from pareto_splat.pruning_study import (
     collect_summary_rows,
     load_pruning_study_config,
     write_summary_outputs,
+    write_tradeoff_plots,
 )
 
 
@@ -121,10 +122,58 @@ def test_collect_summary_rows_and_write_outputs(tmp_path: Path) -> None:
 
     rows = collect_summary_rows(config)
     json_path, csv_path = write_summary_outputs(rows, tmp_path / "summary")
+    summary = json.loads(json_path.read_text(encoding="utf-8"))
 
     assert len(rows) == 10
     assert rows[0]["variant_id"] == "baseline"
     assert rows[0]["keep_fraction"] == 1.0
     assert rows[1]["keep_fraction"] == 0.5
+    assert summary[0]["pareto_rank"] == 0
+    assert "pareto_rank" in csv_path.read_text(encoding="utf-8").splitlines()[0]
     assert json_path.is_file()
     assert csv_path.is_file()
+
+
+def test_write_tradeoff_plots_includes_pareto_fronts(tmp_path: Path) -> None:
+    rows = [
+        {
+            "variant_id": "baseline",
+            "strategy": "baseline",
+            "psnr": 35.0,
+            "lpips_vgg": 0.02,
+            "fps": 300.0,
+            "gaussian_count": 300_000,
+            "serialized_mib": 70.0,
+        },
+        {
+            "variant_id": "top_k_keep_050",
+            "strategy": "top-k",
+            "psnr": 30.0,
+            "lpips_vgg": 0.04,
+            "fps": 600.0,
+            "gaussian_count": 150_000,
+            "serialized_mib": 35.0,
+        },
+        {
+            "variant_id": "random_keep_050_seed_0",
+            "strategy": "random",
+            "psnr": 27.0,
+            "lpips_vgg": 0.07,
+            "fps": 450.0,
+            "gaussian_count": 150_000,
+            "serialized_mib": 35.0,
+        },
+    ]
+
+    paths = write_tradeoff_plots(rows, tmp_path)
+    filenames = {path.name for path in paths}
+
+    assert {
+        "psnr_vs_gaussians.png",
+        "psnr_vs_fps.png",
+        "lpips_vs_size.png",
+        "pareto_psnr_vs_fps.png",
+        "pareto_psnr_vs_size.png",
+        "pareto_psnr_fps_size_3d.png",
+    } == filenames
+    assert all(path.is_file() for path in paths)

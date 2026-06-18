@@ -1,7 +1,8 @@
 # Pareto Dominance
 
 Session 11 formalizes Pareto objectives and implements non-dominated sorting.
-The utilities live in `src/pareto_splat/pareto.py`.
+Session 12 uses those ranks to generate the first 2D and 3D Pareto-front
+visualizations. The utilities live in `src/pareto_splat/pareto.py`.
 
 ## Objectives
 
@@ -100,6 +101,7 @@ fronts = non_dominated_sort(rows, objectives)
 annotated = annotate_pareto_ranks(rows, objectives)
 ```
 
-For the Session 10 pruning summary, `QUALITY_EFFICIENCY_OBJECTIVES` compares
-visual quality, renderer throughput, and serialized model size. This keeps
-the first Pareto analysis simple before Session 12 adds front visualizations.
+For the pruning summary, `QUALITY_EFFICIENCY_OBJECTIVES` compares visual
+quality, renderer throughput, and serialized model size. The summarize stage
+adds `pareto_rank` to `summary.json` and `summary.csv`, then writes 2D
+projections and a 3D front plot for the rank-0 operating points.

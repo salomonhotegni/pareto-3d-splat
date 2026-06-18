@@ -55,6 +55,9 @@ results/pruning/lego/study_30000/summary/summary.csv
 results/pruning/lego/study_30000/summary/psnr_vs_gaussians.png
 results/pruning/lego/study_30000/summary/psnr_vs_fps.png
 results/pruning/lego/study_30000/summary/lpips_vs_size.png
+results/pruning/lego/study_30000/summary/pareto_psnr_vs_fps.png
+results/pruning/lego/study_30000/summary/pareto_psnr_vs_size.png
+results/pruning/lego/study_30000/summary/pareto_psnr_fps_size_3d.png
 ```
 
 ## Session 10 Results
@@ -89,8 +92,13 @@ quality-efficiency objective set, the baseline plus top-k and
 opacity-threshold variants are rank 0, while all random variants are rank 1.
 See [docs/pareto.md](pareto.md) for the objective definitions and ranking API.
 
+Session 12 extends the summary step with Pareto-front outputs. The JSON and
+CSV summaries now include a `pareto_rank` column computed from PSNR, FPS, and
+serialized model size. The rank-0 variants are highlighted in 2D projections
+for PSNR-vs-FPS and PSNR-vs-size, and in a 3D PSNR/FPS/size plot.
+
 ## Notes
 
 Rendering and profiling require CUDA. The summary includes the baseline row
 plus each pruning variant, with PSNR, SSIM, LPIPS-VGG, FPS, latency, Gaussian
-count, serialized model size, and peak allocated GPU memory.
+count, serialized model size, peak allocated GPU memory, and Pareto rank.
