@@ -29,7 +29,7 @@ are defined in `docs/project_plan.md`.
 - [x] **Session 11:** Formalize objectives and implement Pareto dominance and
   non-dominated sorting.
 - [x] **Session 12:** Generate the first 2D and 3D Pareto fronts.
-- [ ] **Session 13:** Implement a visibility-aware Gaussian importance score.
+- [x] **Session 13:** Implement a visibility-aware Gaussian importance score.
 - [ ] **Session 14:** Compare all pruning methods at matched Gaussian budgets.
 
 ## Phase 4: Robustness and Ablations

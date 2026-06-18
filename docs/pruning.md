@@ -63,6 +63,10 @@ score_i = alpha_i
 m_i = 1[i in top_k(score)]
 ```
 
+Session 13 adds a visibility-aware importance score that combines activated
+opacity with how often each Gaussian center projects into the available camera
+frusta. See [docs/visibility_importance.md](visibility_importance.md).
+
 ## CLI
 
 Create a pruned Lego model keeping 50% of Gaussians by opacity:
