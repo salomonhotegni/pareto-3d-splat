@@ -83,6 +83,12 @@ Gaussians. Opacity-threshold pruning produces similar behavior to top-k at
 nearby Gaussian counts, with `opacity_threshold_010` preserving 34.331 dB PSNR
 while improving throughput from 282.98 FPS to 459.38 FPS.
 
+Session 11 formalizes this comparison with Pareto dominance and
+non-dominated sorting. Using PSNR, FPS, and serialized model size as the first
+quality-efficiency objective set, the baseline plus top-k and
+opacity-threshold variants are rank 0, while all random variants are rank 1.
+See [docs/pareto.md](pareto.md) for the objective definitions and ranking API.
+
 ## Notes
 
 Rendering and profiling require CUDA. The summary includes the baseline row
