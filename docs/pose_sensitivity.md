@@ -86,7 +86,7 @@ make pose-sensitivity-evaluate POSE_VARIANT=rot_0p25deg
 
 ## Summary Metrics
 
-The summary stage writes:
+The completed Lego study writes:
 
 ```text
 results/pose_sensitivity/lego/study_30000/summary/summary.json
@@ -117,3 +117,40 @@ The table includes the baseline row and computes degradation as:
 ```
 
 Positive values mean worse quality under pose perturbation.
+
+## Session 15 Results
+
+The completed study uses the corrected Lego baseline as the reference:
+
+| Variant | Mean rotation angle | Mean translation norm | PSNR | PSNR drop | SSIM | SSIM drop | LPIPS-VGG | LPIPS increase |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| baseline | 0.0000 deg | 0.000000 | 35.9166 | 0.0000 | 0.983729 | 0.000000 | 0.019002 | 0.000000 |
+| rot_0p25deg | 0.3994 deg | 0.000000 | 19.0981 | 16.8185 | 0.774357 | 0.209373 | 0.118881 | 0.099879 |
+| rot_0p50deg | 0.7987 deg | 0.000000 | 16.6587 | 19.2579 | 0.745250 | 0.238479 | 0.168238 | 0.149236 |
+| trans_0p005 | 0.0000 deg | 0.007987 | 24.5416 | 11.3750 | 0.874998 | 0.108731 | 0.053999 | 0.034997 |
+| rot_0p25deg_trans_0p005 | 0.3938 deg | 0.007731 | 18.9473 | 16.9693 | 0.771919 | 0.211810 | 0.120891 | 0.101889 |
+| rot_0p50deg_trans_0p010 | 0.7876 deg | 0.015463 | 16.5437 | 19.3728 | 0.744766 | 0.238963 | 0.170081 | 0.151078 |
+
+The largest single-axis effect in this batch is angular error. The
+`rot_0p25deg` variant loses 16.8185 dB PSNR, while the translation-only
+`trans_0p005` variant loses 11.3750 dB. Combining small translation noise with
+rotation noise only slightly worsens the corresponding rotation-only variants:
+
+```math
+\Delta\mathrm{PSNR}_{\mathrm{rot0.25+trans0.005}}
+- \Delta\mathrm{PSNR}_{\mathrm{rot0.25}}
+= 16.9693 - 16.8185
+= 0.1508 \text{ dB},
+```
+
+```math
+\Delta\mathrm{PSNR}_{\mathrm{rot0.50+trans0.010}}
+- \Delta\mathrm{PSNR}_{\mathrm{rot0.50}}
+= 19.3728 - 19.2579
+= 0.1149 \text{ dB}.
+```
+
+For this trained Lego model, the held-out-view rendering quality is therefore
+highly sensitive to sub-degree camera orientation perturbations. Small
+translation perturbations are also damaging, but less severe than the tested
+rotation perturbations.
