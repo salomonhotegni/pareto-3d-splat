@@ -13,12 +13,13 @@ and Pareto-front analysis.
 
 **Sessions 4-13 are complete.** The clean baseline workflow has been run on
 NeRF Synthetic Lego and Drums, and post-training Gaussian pruning now supports
-random, opacity-threshold, and top-k strategies. The first Lego pruning study
-evaluated nine operating points and generated quality-efficiency trade-off
+random, opacity-threshold, opacity top-k, and visibility top-k strategies. The
+first Lego pruning study evaluated nine operating points and generated quality-efficiency trade-off
 plots. Pareto dominance and non-dominated sorting utilities now formalize the
 first quality-efficiency objective comparisons, and the summary workflow writes
 2D and 3D Pareto-front plots. A CPU-only visibility-aware Gaussian importance
-score is implemented for the next matched-budget pruning comparison. See the
+score is wired into the pruning workflow for the next matched-budget
+comparison. See the
 [Lego baseline report](docs/baseline_results.md), the
 [Drums baseline report](docs/drums_baseline_results.md), and the
 [roadmap](docs/roadmap.md).

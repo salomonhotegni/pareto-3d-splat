@@ -40,6 +40,11 @@ pruning:
       - 0.25
       - 0.5
       - 0.75
+  visibility-top-k:
+    keep_fractions:
+      - 0.25
+      - 0.5
+      - 0.75
   opacity-threshold:
     thresholds:
       - 0.1

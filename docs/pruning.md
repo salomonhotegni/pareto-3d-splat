@@ -66,6 +66,16 @@ m_i = 1[i in top_k(score)]
 Session 13 adds a visibility-aware importance score that combines activated
 opacity with how often each Gaussian center projects into the available camera
 frusta. See [docs/visibility_importance.md](visibility_importance.md).
+Session 14 wires that score into fixed-budget pruning:
+
+```text
+score_i = alpha_i log(1 + V_i)
+m_i = 1[i in top_k(score)]
+```
+
+This `visibility-top-k` strategy uses the source model's `cameras.json` and
+can be compared directly with random and opacity top-k pruning at the same
+Gaussian budgets.
 
 ## CLI
 
@@ -79,6 +89,18 @@ python scripts/prune_gaussians.py \
   --keep-fraction 0.5 \
   --source-model-path results/baseline/lego/seed_0 \
   --output-model-path results/pruning/lego/top_k/keep_050
+```
+
+Create a matched-budget model using visibility-aware importance:
+
+```bash
+python scripts/prune_gaussians.py \
+  --input results/baseline/lego/seed_0/point_cloud/iteration_30000/point_cloud.ply \
+  --output results/pruning/lego/visibility_top_k/keep_050/point_cloud/iteration_30000/point_cloud.ply \
+  --strategy visibility-top-k \
+  --keep-fraction 0.5 \
+  --source-model-path results/baseline/lego/seed_0 \
+  --output-model-path results/pruning/lego/visibility_top_k/keep_050
 ```
 
 The output model can be rendered by pointing the experiment workflow at the

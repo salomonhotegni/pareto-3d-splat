@@ -8,6 +8,7 @@ corrected Lego baseline as the source model and creates variants for:
 
 - random pruning at 25%, 50%, and 75% retained Gaussians;
 - opacity top-k pruning at 25%, 50%, and 75% retained Gaussians;
+- visibility-aware top-k pruning at 25%, 50%, and 75% retained Gaussians;
 - opacity-threshold pruning at activated opacity thresholds 0.1, 0.3, and 0.5.
 
 ## Stages
@@ -96,6 +97,11 @@ Session 12 extends the summary step with Pareto-front outputs. The JSON and
 CSV summaries now include a `pareto_rank` column computed from PSNR, FPS, and
 serialized model size. The rank-0 variants are highlighted in 2D projections
 for PSNR-vs-FPS and PSNR-vs-size, and in a 3D PSNR/FPS/size plot.
+
+Session 14 adds `visibility-top-k` variants to the configured grid so random,
+opacity top-k, and visibility-aware top-k methods can be compared at matched
+25%, 50%, and 75% Gaussian budgets. These variants use the source model's
+`cameras.json` to compute the Session 13 visibility-aware importance score.
 
 ## Notes
 

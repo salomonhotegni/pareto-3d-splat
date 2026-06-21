@@ -29,7 +29,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         "--strategy",
         required=True,
-        choices=("random", "opacity-threshold", "top-k"),
+        choices=("random", "opacity-threshold", "top-k", "visibility-top-k"),
     )
     parser.add_argument(
         "--keep-count",
@@ -39,7 +39,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         "--keep-fraction",
         type=float,
-        help="fraction of Gaussians to keep for random/top-k pruning",
+        help="fraction of Gaussians to keep for fixed-budget pruning",
     )
     parser.add_argument(
         "--opacity-threshold",

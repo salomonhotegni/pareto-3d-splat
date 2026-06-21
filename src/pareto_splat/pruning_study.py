@@ -191,6 +191,26 @@ def build_variants(
                 )
             )
 
+    if "visibility-top-k" in pruning:
+        visibility_top_k_config = _mapping(
+            pruning["visibility-top-k"],
+            "pruning.visibility-top-k",
+        )
+        for keep_fraction in _fraction_list(
+            visibility_top_k_config,
+            "keep_fractions",
+        ):
+            variant_id = f"visibility_top_k_keep_{fraction_label(keep_fraction)}"
+            variants.append(
+                VariantSpec(
+                    variant_id=variant_id,
+                    strategy="visibility-top-k",
+                    model_path=output_root / variant_id,
+                    iteration=iteration,
+                    keep_fraction=keep_fraction,
+                )
+            )
+
     if "opacity-threshold" in pruning:
         threshold_config = _mapping(
             pruning["opacity-threshold"],

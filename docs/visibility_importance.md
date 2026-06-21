@@ -73,5 +73,6 @@ visibility_count = scores.visibility_count
 opacity = scores.opacity
 ```
 
-The returned arrays have one value per Gaussian vertex. Session 14 can use
-`importance` for top-k pruning at matched Gaussian budgets.
+The returned arrays have one value per Gaussian vertex. Session 14 uses
+`importance` through the `visibility-top-k` pruning strategy for matched
+Gaussian-budget comparisons.

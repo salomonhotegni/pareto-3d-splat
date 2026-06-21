@@ -8,13 +8,19 @@ import shutil
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any, Literal, Sequence
 
 import numpy as np
 from plyfile import PlyData, PlyElement
 
+from pareto_splat.visibility import (
+    Camera,
+    VisibilityError,
+    load_cameras_json,
+    visibility_aware_importance,
+)
 
-PruningStrategy = Literal["random", "opacity-threshold", "top-k"]
+PruningStrategy = Literal["random", "opacity-threshold", "top-k", "visibility-top-k"]
 PRUNING_SCHEMA_VERSION = 1
 GRAPHDECO_METADATA_FILES = ("cfg_args", "cameras.json", "exposure.json")
 
@@ -132,6 +138,33 @@ def top_k_opacity_mask(vertices: np.ndarray, keep_count: int) -> np.ndarray:
     return mask
 
 
+def top_k_visibility_mask(
+    vertices: np.ndarray,
+    keep_count: int,
+    cameras: Sequence[Camera],
+) -> tuple[np.ndarray, dict[str, Any]]:
+    """Keep the Gaussians with largest visibility-aware importance score."""
+
+    if keep_count <= 0 or keep_count > len(vertices):
+        raise PruningError("invalid visibility-top-k pruning keep count")
+    if not cameras:
+        raise PruningError("visibility-top-k pruning requires at least one camera")
+
+    scores = visibility_aware_importance(vertices, cameras)
+    order = np.argsort(scores.importance, kind="stable")
+    selected = order[-keep_count:]
+    mask = np.zeros(len(vertices), dtype=bool)
+    mask[selected] = True
+    metadata = {
+        "score": "visibility_aware_importance",
+        "camera_count": len(cameras),
+        "visible_gaussian_count": int(np.count_nonzero(scores.visibility_count)),
+        "mean_visibility_count": float(scores.visibility_count.mean()),
+        "max_visibility_count": int(scores.visibility_count.max()),
+    }
+    return mask, metadata
+
+
 def opacity_threshold_mask(
     vertices: np.ndarray,
     opacity_threshold: float,
@@ -150,11 +183,12 @@ def prune_mask(
     keep_fraction: float | None = None,
     opacity_threshold: float | None = None,
     seed: int = 0,
+    cameras: Sequence[Camera] | None = None,
 ) -> tuple[np.ndarray, dict[str, Any]]:
     """Build a pruning mask and strategy-specific metadata."""
 
     total_count = len(vertices)
-    if strategy in {"random", "top-k"}:
+    if strategy in {"random", "top-k", "visibility-top-k"}:
         resolved_keep_count = resolve_keep_count(
             total_count,
             keep_count=keep_count,
@@ -171,10 +205,25 @@ def prune_mask(
                 "requested_keep_count": keep_count,
                 "requested_keep_fraction": keep_fraction,
             }
-        else:
+        elif strategy == "top-k":
             mask = top_k_opacity_mask(vertices, resolved_keep_count)
             strategy_metadata = {
                 "score": "opacity",
+                "requested_keep_count": keep_count,
+                "requested_keep_fraction": keep_fraction,
+            }
+        else:
+            if cameras is None:
+                raise PruningError(
+                    "visibility-top-k pruning requires camera metadata"
+                )
+            mask, visibility_metadata = top_k_visibility_mask(
+                vertices,
+                resolved_keep_count,
+                cameras,
+            )
+            strategy_metadata = {
+                **visibility_metadata,
                 "requested_keep_count": keep_count,
                 "requested_keep_fraction": keep_fraction,
             }
@@ -237,6 +286,20 @@ def metadata_path_for_output(output_path: Path) -> Path:
     return output_path.parent / "pruning_metadata.json"
 
 
+def load_visibility_cameras(source_model_path: Path | None) -> tuple[Camera, ...]:
+    """Load camera metadata required by visibility-aware pruning."""
+
+    if source_model_path is None:
+        raise PruningError(
+            "visibility-top-k pruning requires source_model_path with cameras.json"
+        )
+    camera_path = source_model_path.resolve() / "cameras.json"
+    try:
+        return load_cameras_json(camera_path)
+    except VisibilityError as error:
+        raise PruningError(str(error)) from error
+
+
 def prune_ply(
     input_path: Path,
     output_path: Path,
@@ -254,6 +317,11 @@ def prune_ply(
     input_path = input_path.resolve()
     output_path = output_path.resolve()
     source_ply, vertices = load_vertex_data(input_path)
+    cameras = (
+        load_visibility_cameras(source_model_path)
+        if strategy == "visibility-top-k"
+        else None
+    )
     mask, strategy_metadata = prune_mask(
         vertices,
         strategy,
@@ -261,6 +329,7 @@ def prune_ply(
         keep_fraction=keep_fraction,
         opacity_threshold=opacity_threshold,
         seed=seed,
+        cameras=cameras,
     )
 
     pruned_vertices = vertices[mask].copy()

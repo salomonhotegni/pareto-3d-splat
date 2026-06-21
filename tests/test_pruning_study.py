@@ -67,9 +67,10 @@ def test_pruning_study_config_builds_expected_variants() -> None:
     variant_ids = [variant.variant_id for variant in config.variants]
 
     assert config.scene == "lego"
-    assert len(config.variants) == 9
+    assert len(config.variants) == 12
     assert "random_keep_050_seed_0" in variant_ids
     assert "top_k_keep_075" in variant_ids
+    assert "visibility_top_k_keep_075" in variant_ids
     assert "opacity_threshold_030" in variant_ids
     assert "iteration_30000" in str(config.variants[0].point_cloud_path)
 
@@ -124,7 +125,7 @@ def test_collect_summary_rows_and_write_outputs(tmp_path: Path) -> None:
     json_path, csv_path = write_summary_outputs(rows, tmp_path / "summary")
     summary = json.loads(json_path.read_text(encoding="utf-8"))
 
-    assert len(rows) == 10
+    assert len(rows) == 13
     assert rows[0]["variant_id"] == "baseline"
     assert rows[0]["keep_fraction"] == 1.0
     assert rows[1]["keep_fraction"] == 0.5
