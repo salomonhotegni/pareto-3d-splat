@@ -1,0 +1,54 @@
+study:
+  name: lego_pose_sensitivity
+  scene: lego
+  iteration: 30000
+  output_root: results/pose_sensitivity/lego/study_30000
+  dataset_root: data/nerf_synthetic/lego_pose_sensitivity
+
+baseline:
+  model_path: results/baseline/lego/seed_0
+  source_path: data/nerf_synthetic/lego
+  baseline_root: third_party/gaussian-splatting
+
+dataset:
+  test_views: 200
+  resolution: 1
+  white_background: true
+  sh_degree: 3
+  data_device: cpu
+  image_policy: symlink
+
+rendering:
+  skip_train: true
+
+evaluation:
+  device: auto
+
+profiling:
+  warmup_views: 10
+  repetitions: 3
+
+pose_perturbation:
+  splits:
+    - test
+  variants:
+    - id: rot_0p25deg
+      rotation_degrees: 0.25
+      translation_std: 0.0
+      seed: 0
+    - id: rot_0p50deg
+      rotation_degrees: 0.5
+      translation_std: 0.0
+      seed: 0
+    - id: trans_0p005
+      rotation_degrees: 0.0
+      translation_std: 0.005
+      seed: 0
+    - id: rot_0p25deg_trans_0p005
+      rotation_degrees: 0.25
+      translation_std: 0.005
+      seed: 0
+    - id: rot_0p50deg_trans_0p010
+      rotation_degrees: 0.5
+      translation_std: 0.01
+      seed: 0

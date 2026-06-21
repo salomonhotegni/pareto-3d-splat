@@ -5,8 +5,11 @@ CONFIG ?= configs/baseline.yaml
 PRUNING_CONFIG ?= configs/pruning_lego.yaml
 PRUNING_VARIANT ?=
 PRUNING_VARIANT_ARG := $(if $(PRUNING_VARIANT),--variant $(PRUNING_VARIANT),)
+POSE_SENSITIVITY_CONFIG ?= configs/pose_sensitivity_lego.yaml
+POSE_VARIANT ?=
+POSE_VARIANT_ARG := $(if $(POSE_VARIANT),--variant $(POSE_VARIANT),)
 
-.PHONY: env baseline install dataset dataset-lego dataset-drums check-data check-data-lego check-data-drums train-baseline render-baseline evaluate-baseline profile-baseline comparison-video pruning-study-prune pruning-study-render pruning-study-evaluate pruning-study-profile pruning-study-summarize check check-core test
+.PHONY: env baseline install dataset dataset-lego dataset-drums check-data check-data-lego check-data-drums train-baseline render-baseline evaluate-baseline profile-baseline comparison-video pruning-study-prune pruning-study-render pruning-study-evaluate pruning-study-profile pruning-study-summarize pose-sensitivity-prepare pose-sensitivity-render pose-sensitivity-evaluate pose-sensitivity-profile pose-sensitivity-summarize check check-core test
 
 env:
 	conda env update --name $(CONDA_ENV) --file environment.yml --prune
@@ -62,6 +65,21 @@ pruning-study-profile:
 
 pruning-study-summarize:
 	conda run --no-capture-output -n $(CONDA_ENV) python scripts/run_pruning_study.py --config $(PRUNING_CONFIG) summarize
+
+pose-sensitivity-prepare:
+	conda run --no-capture-output -n $(CONDA_ENV) python scripts/run_pose_sensitivity.py --config $(POSE_SENSITIVITY_CONFIG) $(POSE_VARIANT_ARG) prepare
+
+pose-sensitivity-render:
+	conda run --no-capture-output -n $(CONDA_ENV) python scripts/run_pose_sensitivity.py --config $(POSE_SENSITIVITY_CONFIG) $(POSE_VARIANT_ARG) render
+
+pose-sensitivity-evaluate:
+	conda run --no-capture-output -n $(CONDA_ENV) python scripts/run_pose_sensitivity.py --config $(POSE_SENSITIVITY_CONFIG) $(POSE_VARIANT_ARG) evaluate
+
+pose-sensitivity-profile:
+	conda run --no-capture-output -n $(CONDA_ENV) python scripts/run_pose_sensitivity.py --config $(POSE_SENSITIVITY_CONFIG) $(POSE_VARIANT_ARG) profile
+
+pose-sensitivity-summarize:
+	conda run --no-capture-output -n $(CONDA_ENV) python scripts/run_pose_sensitivity.py --config $(POSE_SENSITIVITY_CONFIG) summarize
 
 check-core:
 	conda run --no-capture-output -n $(CONDA_ENV) python scripts/check_environment.py

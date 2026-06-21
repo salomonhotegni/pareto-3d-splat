@@ -49,7 +49,9 @@ the pruning study workflow and Session 10 results are documented in
 [docs/pruning_study.md](docs/pruning_study.md). Pareto objective definitions,
 dominance, non-dominated sorting, and front visualization are documented in
 [docs/pareto.md](docs/pareto.md). Visibility-aware scoring is documented in
-[docs/visibility_importance.md](docs/visibility_importance.md).
+[docs/visibility_importance.md](docs/visibility_importance.md). The
+camera-pose perturbation workflow for Session 15 is documented in
+[docs/pose_sensitivity.md](docs/pose_sensitivity.md).
 
 ## Target System
 
@@ -165,6 +167,23 @@ Restrict render/evaluate/profile stages to one pruning variant while iterating:
 make pruning-study-render PRUNING_VARIANT=top_k_keep_050
 make pruning-study-evaluate PRUNING_VARIANT=top_k_keep_050
 make pruning-study-profile PRUNING_VARIANT=top_k_keep_050
+```
+
+Prepare, render, evaluate, and summarize the default Lego camera-pose
+sensitivity study:
+
+```bash
+make pose-sensitivity-prepare
+make pose-sensitivity-render
+make pose-sensitivity-evaluate
+make pose-sensitivity-summarize
+```
+
+Restrict a pose-sensitivity stage to one perturbation variant while iterating:
+
+```bash
+make pose-sensitivity-render POSE_VARIANT=rot_0p25deg
+make pose-sensitivity-evaluate POSE_VARIANT=rot_0p25deg
 ```
 
 See [docs/setup.md](docs/setup.md) for troubleshooting and machine-specific

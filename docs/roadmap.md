@@ -35,6 +35,7 @@ are defined in `docs/project_plan.md`.
 ## Phase 4: Robustness and Ablations
 
 - [ ] **Session 15:** Evaluate sensitivity to camera-pose perturbations.
+  Tooling is staged; render/evaluate/summarize runs are pending.
 - [ ] **Session 16:** Evaluate image noise, blur, brightness changes, and fewer
   input views.
 - [ ] **Session 17:** Run importance-score ablations.
