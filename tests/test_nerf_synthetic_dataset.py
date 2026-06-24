@@ -65,6 +65,29 @@ def test_validator_rejects_missing_referenced_image(tmp_path: Path) -> None:
         validate_nerf_synthetic_dataset(tmp_path)
 
 
+def test_validator_accepts_symlinked_images_outside_dataset(
+    tmp_path: Path,
+) -> None:
+    source = tmp_path / "source"
+    derived = tmp_path / "derived"
+    create_tiny_dataset(source)
+    create_tiny_dataset(derived)
+
+    for split in ("train", "val", "test"):
+        derived_image = derived / split / "r_0.png"
+        derived_image.unlink()
+        derived_image.symlink_to((source / split / "r_0.png").resolve())
+
+    summaries = validate_nerf_synthetic_dataset(
+        derived,
+        expected_split_counts={"train": 1, "val": 1, "test": 1},
+        expected_image_size=(4, 4),
+        expected_image_mode="RGBA",
+    )
+
+    assert all(summary.frame_count == 1 for summary in summaries)
+
+
 def test_official_contract_applies_to_all_synthetic_scenes() -> None:
     assert OFFICIAL_NERF_SYNTHETIC_SPLIT_COUNTS == {
         "train": 100,

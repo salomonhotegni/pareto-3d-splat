@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import math
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Mapping
@@ -74,7 +75,7 @@ def _image_path(dataset_dir: Path, frame_path: object, context: str) -> Path:
     if relative_path.is_absolute():
         raise DatasetValidationError(f"{context}: file_path must be relative")
 
-    image_path = (dataset_dir / f"{frame_path}.png").resolve()
+    image_path = Path(os.path.abspath(dataset_dir / f"{frame_path}.png"))
     try:
         image_path.relative_to(dataset_dir.resolve())
     except ValueError as error:
