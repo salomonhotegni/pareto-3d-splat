@@ -32,6 +32,24 @@ def parse_args() -> argparse.Namespace:
         default=ROOT_DIR / "data" / "nerf_synthetic" / "lego",
         help="dataset directory (default: data/nerf_synthetic/lego)",
     )
+    parser.add_argument(
+        "--train-views",
+        type=int,
+        default=OFFICIAL_NERF_SYNTHETIC_SPLIT_COUNTS["train"],
+        help="expected train camera count",
+    )
+    parser.add_argument(
+        "--validation-views",
+        type=int,
+        default=OFFICIAL_NERF_SYNTHETIC_SPLIT_COUNTS["val"],
+        help="expected validation camera count",
+    )
+    parser.add_argument(
+        "--test-views",
+        type=int,
+        default=OFFICIAL_NERF_SYNTHETIC_SPLIT_COUNTS["test"],
+        help="expected test camera count",
+    )
     return parser.parse_args()
 
 
@@ -40,7 +58,11 @@ def main() -> int:
     try:
         summaries = validate_nerf_synthetic_dataset(
             args.dataset,
-            expected_split_counts=OFFICIAL_NERF_SYNTHETIC_SPLIT_COUNTS,
+            expected_split_counts={
+                "train": args.train_views,
+                "val": args.validation_views,
+                "test": args.test_views,
+            },
             expected_image_size=OFFICIAL_NERF_SYNTHETIC_IMAGE_SIZE,
             expected_image_mode=OFFICIAL_NERF_SYNTHETIC_IMAGE_MODE,
         )

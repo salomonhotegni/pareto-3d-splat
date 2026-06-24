@@ -1,0 +1,42 @@
+study:
+  name: lego_input_sensitivity
+  scene: lego
+  output_root: results/input_sensitivity/lego/study_30000
+  dataset_root: data/nerf_synthetic/lego_input_sensitivity
+
+baseline:
+  config: configs/baseline.yaml
+  model_path: results/baseline/lego/seed_0
+  source_path: data/nerf_synthetic/lego
+
+dataset:
+  test_views: 200
+  validation_views: 100
+  image_policy: symlink
+
+input_degradation:
+  variants:
+    - id: noise_std_0p02
+      degradation: gaussian-noise
+      noise_std: 0.02
+      seed: 0
+    - id: blur_radius_1p0
+      degradation: gaussian-blur
+      blur_radius: 1.0
+      seed: 0
+    - id: brightness_0p75
+      degradation: brightness
+      brightness_factor: 0.75
+      seed: 0
+    - id: brightness_1p25
+      degradation: brightness
+      brightness_factor: 1.25
+      seed: 0
+    - id: train_views_050
+      degradation: clean
+      train_view_count: 50
+      seed: 0
+    - id: train_views_025
+      degradation: clean
+      train_view_count: 25
+      seed: 0

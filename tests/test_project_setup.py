@@ -23,6 +23,8 @@ def test_baseline_config_contains_core_metrics() -> None:
 
     assert config["experiment"]["seed"] == 0
     assert config["dataset"]["name"] == "nerf_synthetic_lego"
+    assert config["dataset"]["train_views"] == 100
+    assert config["dataset"]["validation_views"] == 100
     assert config["dataset"]["white_background"] is True
     assert config["training"]["eval_split"] is True
     assert config["training"]["checkpoint_iterations"] == [
@@ -170,6 +172,8 @@ def test_experiment_config_drives_paths_and_workflow_settings() -> None:
     assert config.model_path == ROOT_DIR / "results" / "baseline" / "lego" / "seed_0"
     assert config.iterations == 30_000
     assert config.render_iteration == 30_000
+    assert config.train_views == 100
+    assert config.validation_views == 100
     assert config.test_views == 200
     assert config.profiling_warmup_views == 10
     assert config.profiling_repetitions == 3
@@ -189,6 +193,8 @@ def test_drums_config_selects_second_scene() -> None:
         ROOT_DIR / "results" / "baseline" / "drums" / "seed_0"
     )
     assert config.iterations == 30_000
+    assert config.train_views == 100
+    assert config.validation_views == 100
     assert config.test_views == 200
 
 

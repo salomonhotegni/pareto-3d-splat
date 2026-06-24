@@ -51,7 +51,9 @@ dominance, non-dominated sorting, and front visualization are documented in
 [docs/pareto.md](docs/pareto.md). Visibility-aware scoring is documented in
 [docs/visibility_importance.md](docs/visibility_importance.md). The
 camera-pose perturbation workflow for Session 15 is documented in
-[docs/pose_sensitivity.md](docs/pose_sensitivity.md).
+[docs/pose_sensitivity.md](docs/pose_sensitivity.md). Training-input
+robustness tooling for Session 16 is documented in
+[docs/input_sensitivity.md](docs/input_sensitivity.md).
 
 ## Target System
 
@@ -184,6 +186,24 @@ Restrict a pose-sensitivity stage to one perturbation variant while iterating:
 ```bash
 make pose-sensitivity-render POSE_VARIANT=rot_0p25deg
 make pose-sensitivity-evaluate POSE_VARIANT=rot_0p25deg
+```
+
+Prepare, train, render, evaluate, and summarize the default Lego
+training-input sensitivity study:
+
+```bash
+make input-sensitivity-prepare
+make input-sensitivity-train
+make input-sensitivity-render
+make input-sensitivity-evaluate
+make input-sensitivity-summarize
+```
+
+Restrict an input-sensitivity stage to one variant while iterating:
+
+```bash
+make input-sensitivity-train INPUT_VARIANT=noise_std_0p02
+make input-sensitivity-evaluate INPUT_VARIANT=noise_std_0p02
 ```
 
 See [docs/setup.md](docs/setup.md) for troubleshooting and machine-specific

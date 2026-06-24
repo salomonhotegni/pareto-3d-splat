@@ -74,6 +74,8 @@ class ExperimentConfig:
     model_path: Path
     dataset_name: str
     dataset_format: str
+    train_views: int
+    validation_views: int
     test_views: int
     white_background: bool
     resolution: int
@@ -169,6 +171,8 @@ def load_experiment_config(
         ),
         dataset_name=_required(dataset, "name", str),
         dataset_format=_required(dataset, "format", str),
+        train_views=_positive_int(dataset, "train_views"),
+        validation_views=_positive_int(dataset, "validation_views"),
         test_views=_positive_int(dataset, "test_views"),
         white_background=_required(dataset, "white_background", bool),
         resolution=_positive_int(dataset, "resolution"),
