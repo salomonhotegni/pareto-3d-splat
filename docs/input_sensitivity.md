@@ -132,5 +132,55 @@ reduced inputs.
 
 ## Session 16 Results
 
-Pending. The tooling is staged; the train/render/evaluate/summarize runs still
-need to be executed.
+All configured Lego variants were prepared, trained for 30,000 iterations,
+rendered on the clean 200-view test split, evaluated, profiled, and summarized.
+The summary artifacts are:
+
+```text
+results/input_sensitivity/lego/study_30000/summary/summary.json
+results/input_sensitivity/lego/study_30000/summary/summary.csv
+results/input_sensitivity/lego/study_30000/summary/psnr_by_variant.png
+results/input_sensitivity/lego/study_30000/summary/psnr_drop_by_variant.png
+results/input_sensitivity/lego/study_30000/summary/lpips_increase_by_variant.png
+```
+
+Quality is measured against the clean held-out test split. Drops are relative
+to the clean Lego baseline:
+
+| Variant | Training input | Train views | PSNR | Delta PSNR | SSIM | Delta SSIM | LPIPS-VGG | Delta LPIPS |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `baseline` | clean | 100 | 35.92 | 0.00 | 0.9837 | 0.0000 | 0.0190 | 0.0000 |
+| `noise_std_0p02` | Gaussian noise, sigma 0.02 | 100 | 35.33 | 0.59 | 0.9782 | 0.0056 | 0.0258 | 0.0068 |
+| `blur_radius_1p0` | Gaussian blur, radius 1.0 | 100 | 32.30 | 3.62 | 0.9640 | 0.0197 | 0.0593 | 0.0403 |
+| `brightness_0p75` | brightness scale 0.75 | 100 | 22.85 | 13.07 | 0.9607 | 0.0230 | 0.0295 | 0.0105 |
+| `brightness_1p25` | brightness scale 1.25 | 100 | 24.83 | 11.08 | 0.9646 | 0.0191 | 0.0351 | 0.0161 |
+| `train_views_050` | clean subset | 50 | 34.24 | 1.67 | 0.9754 | 0.0083 | 0.0263 | 0.0073 |
+| `train_views_025` | clean subset | 25 | 29.90 | 6.02 | 0.9506 | 0.0332 | 0.0506 | 0.0316 |
+
+The matching profile results are:
+
+| Variant | Gaussians | Serialized model | Mean latency | P95 latency | FPS | Peak memory |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| `baseline` | 299,799 | 70.91 MiB | 3.534 ms | 4.352 ms | 282.98 | 282.92 MiB |
+| `noise_std_0p02` | 284,778 | 67.35 MiB | 3.337 ms | 3.726 ms | 299.64 | 275.78 MiB |
+| `blur_radius_1p0` | 201,525 | 47.66 MiB | 2.690 ms | 3.064 ms | 371.80 | 208.69 MiB |
+| `brightness_0p75` | 283,207 | 66.98 MiB | 3.578 ms | 4.339 ms | 279.45 | 283.17 MiB |
+| `brightness_1p25` | 304,192 | 71.95 MiB | 3.259 ms | 3.699 ms | 306.83 | 280.45 MiB |
+| `train_views_050` | 289,840 | 68.55 MiB | 3.466 ms | 4.199 ms | 288.49 | 281.67 MiB |
+| `train_views_025` | 285,477 | 67.52 MiB | 3.585 ms | 4.372 ms | 278.90 | 285.18 MiB |
+
+The main robustness pattern is:
+
+- Mild Gaussian noise is mostly absorbed by training, with only a
+  \(0.59\) dB PSNR drop.
+- Blur removes high-frequency supervision, causing a larger
+  \(3.62\) dB PSNR drop, but it also learns a smaller model and renders faster.
+- Brightness mismatches are the most damaging variants. The train images are
+  globally darker or brighter while the test split remains clean, so the learned
+  appearance is systematically biased at evaluation time.
+- Reducing from 100 to 50 clean views is still usable, with a
+  \(1.67\) dB PSNR drop. Reducing to 25 views produces a much larger
+  \(6.02\) dB drop, showing that sparse-view coverage is a stronger bottleneck.
+- Efficiency is not monotonic with quality. Fewer views produce slightly fewer
+  Gaussians, but do not improve latency or memory in this run; blur is the only
+  variant that clearly improves both model size and speed.
