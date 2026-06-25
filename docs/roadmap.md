@@ -44,7 +44,7 @@ are defined in `docs/project_plan.md`.
 
 - [x] **Session 19:** Build a demo for selecting scenes and Pareto operating
   points.
-- [ ] **Session 20:** Produce comparison images, videos, plots, and a pipeline
+- [x] **Session 20:** Produce comparison images, videos, plots, and a pipeline
   diagram.
 - [ ] **Session 21:** Write the technical report draft.
 - [ ] **Session 22:** Finalize experiments, claims, and limitations.

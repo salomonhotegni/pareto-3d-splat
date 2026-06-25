@@ -12,8 +12,9 @@ INPUT_SENSITIVITY_CONFIG ?= configs/input_sensitivity_lego.yaml
 INPUT_VARIANT ?=
 INPUT_VARIANT_ARG := $(if $(INPUT_VARIANT),--variant $(INPUT_VARIANT),)
 DEMO_OUTPUT ?= results/demo/index.html
+PORTFOLIO_OUTPUT ?= results/portfolio
 
-.PHONY: env baseline install dataset dataset-lego dataset-drums check-data check-data-lego check-data-drums train-baseline render-baseline evaluate-baseline profile-baseline comparison-video pruning-study-prune pruning-study-render pruning-study-evaluate pruning-study-profile pruning-study-summarize pose-sensitivity-prepare pose-sensitivity-render pose-sensitivity-evaluate pose-sensitivity-profile pose-sensitivity-summarize input-sensitivity-prepare input-sensitivity-train input-sensitivity-render input-sensitivity-evaluate input-sensitivity-profile input-sensitivity-summarize demo check check-core test
+.PHONY: env baseline install dataset dataset-lego dataset-drums check-data check-data-lego check-data-drums train-baseline render-baseline evaluate-baseline profile-baseline comparison-video pruning-study-prune pruning-study-render pruning-study-evaluate pruning-study-profile pruning-study-summarize pose-sensitivity-prepare pose-sensitivity-render pose-sensitivity-evaluate pose-sensitivity-profile pose-sensitivity-summarize input-sensitivity-prepare input-sensitivity-train input-sensitivity-render input-sensitivity-evaluate input-sensitivity-profile input-sensitivity-summarize demo portfolio-assets check check-core test
 
 env:
 	conda env update --name $(CONDA_ENV) --file environment.yml --prune
@@ -105,6 +106,9 @@ input-sensitivity-summarize:
 
 demo:
 	conda run --no-capture-output -n $(CONDA_ENV) python scripts/build_demo.py --output $(DEMO_OUTPUT)
+
+portfolio-assets:
+	conda run --no-capture-output -n $(CONDA_ENV) python scripts/build_portfolio_assets.py --output $(PORTFOLIO_OUTPUT)
 
 check-core:
 	conda run --no-capture-output -n $(CONDA_ENV) python scripts/check_environment.py

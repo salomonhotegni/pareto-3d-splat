@@ -11,7 +11,7 @@ and Pareto-front analysis.
 
 ## Project Status
 
-**Sessions 4-19 are complete.** The clean baseline workflow has been run on
+**Sessions 4-20 are complete.** The clean baseline workflow has been run on
 NeRF Synthetic Lego and Drums. Post-training Gaussian pruning supports random,
 opacity-threshold, opacity top-k, and visibility-aware top-k strategies, with
 matched-budget pruning and importance-score ablations on Lego. Pareto
@@ -20,7 +20,8 @@ quality-efficiency objective comparisons, and the summary workflow writes 2D
 and 3D Pareto-front plots. Robustness studies now cover camera-pose
 perturbations, image degradations, brightness shifts, fewer training views,
 and documented failure cases. A static demo can be generated to inspect
-studies and Pareto operating points in a browser. See the
+studies and Pareto operating points in a browser, and a portfolio asset builder
+packages comparison panels, plots, videos, and the pipeline diagram. See the
 [Lego baseline report](docs/baseline_results.md), the
 [Drums baseline report](docs/drums_baseline_results.md), and the
 [roadmap](docs/roadmap.md).
@@ -61,7 +62,9 @@ ablations are documented in
 [docs/importance_ablation.md](docs/importance_ablation.md), and observed
 failure cases and practical limitations are summarized in
 [docs/limitations.md](docs/limitations.md). The static demo generator is
-documented in [docs/demo.md](docs/demo.md).
+documented in [docs/demo.md](docs/demo.md). Portfolio assets and the pipeline
+diagram are documented in [docs/portfolio_assets.md](docs/portfolio_assets.md)
+and [docs/pipeline.md](docs/pipeline.md).
 
 ## Target System
 
@@ -221,6 +224,14 @@ make demo
 ```
 
 The generated page is written to `results/demo/index.html`.
+
+Build curated local portfolio assets:
+
+```bash
+make portfolio-assets
+```
+
+The generated bundle is written to `results/portfolio/`.
 
 See [docs/setup.md](docs/setup.md) for troubleshooting and machine-specific
 details, and [docs/dataset_notes.md](docs/dataset_notes.md) for dataset

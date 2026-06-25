@@ -68,3 +68,14 @@ make demo
 
 The generated page is written to `results/demo/index.html`. The demo itself is
 not committed by default; see [`docs/demo.md`](../docs/demo.md) for details.
+
+Build curated portfolio assets with:
+
+```bash
+make portfolio-assets
+```
+
+The generated bundle is written to `results/portfolio/` and includes comparison
+images, copied summary plots, the existing Lego comparison video, a
+`manifest.json`, and an `index.md`. See
+[`docs/portfolio_assets.md`](../docs/portfolio_assets.md) for details.
