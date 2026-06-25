@@ -11,13 +11,15 @@ and Pareto-front analysis.
 
 ## Project Status
 
-**Sessions 4-14 are complete.** The clean baseline workflow has been run on
-NeRF Synthetic Lego and Drums, and post-training Gaussian pruning now supports
-random, opacity-threshold, opacity top-k, and visibility top-k strategies. The
-Lego pruning study now compares matched random, opacity top-k, and visibility
-top-k budgets. Pareto dominance and non-dominated sorting utilities formalize
-the quality-efficiency objective comparisons, and the summary workflow writes
-2D and 3D Pareto-front plots. See the
+**Sessions 4-18 are complete.** The clean baseline workflow has been run on
+NeRF Synthetic Lego and Drums. Post-training Gaussian pruning supports random,
+opacity-threshold, opacity top-k, and visibility-aware top-k strategies, with
+matched-budget pruning and importance-score ablations on Lego. Pareto
+dominance and non-dominated sorting utilities formalize the
+quality-efficiency objective comparisons, and the summary workflow writes 2D
+and 3D Pareto-front plots. Robustness studies now cover camera-pose
+perturbations, image degradations, brightness shifts, fewer training views,
+and documented failure cases. See the
 [Lego baseline report](docs/baseline_results.md), the
 [Drums baseline report](docs/drums_baseline_results.md), and the
 [roadmap](docs/roadmap.md).
@@ -53,7 +55,11 @@ dominance, non-dominated sorting, and front visualization are documented in
 camera-pose perturbation workflow for Session 15 is documented in
 [docs/pose_sensitivity.md](docs/pose_sensitivity.md). Training-input
 robustness tooling for Session 16 is documented in
-[docs/input_sensitivity.md](docs/input_sensitivity.md).
+[docs/input_sensitivity.md](docs/input_sensitivity.md). Importance-score
+ablations are documented in
+[docs/importance_ablation.md](docs/importance_ablation.md), and observed
+failure cases and practical limitations are summarized in
+[docs/limitations.md](docs/limitations.md).
 
 ## Target System
 
