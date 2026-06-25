@@ -35,7 +35,7 @@ p_ic.z > 0
 0 <= v_ic < H_c
 ```
 
-## Score
+## Scores
 
 The depth-weighted visibility proxy is:
 
@@ -43,7 +43,14 @@ The depth-weighted visibility proxy is:
 V_i = sum_c 1[i is inside camera c] / (z_ic^2 + epsilon)
 ```
 
-The final importance score combines this proxy with activated opacity:
+The unweighted visibility count is:
+
+```text
+C_i = sum_c 1[i is inside camera c]
+```
+
+The default importance score combines the depth-weighted proxy with activated
+opacity:
 
 ```text
 alpha_i = sigmoid(o_i)
@@ -52,6 +59,17 @@ I_i = alpha_i * log(1 + V_i)
 
 This favors Gaussians that are both opaque and repeatedly visible from the
 available camera set, while avoiding an expensive render pass.
+
+Session 17 adds ablation modes for the `visibility-top-k` pruning strategy:
+
+| Mode | Score |
+| --- | --- |
+| `opacity_visibility` | `sigmoid(o_i) * log(1 + V_i)` |
+| `visibility` | `log(1 + V_i)` |
+| `opacity_count` | `sigmoid(o_i) * log(1 + C_i)` |
+
+See [docs/importance_ablation.md](importance_ablation.md) for the matched-budget
+results.
 
 ## Python API
 
@@ -65,7 +83,7 @@ from pareto_splat.visibility import (
 
 vertices = PlyData.read(point_cloud_path)["vertex"].data
 cameras = load_cameras_json(model_path / "cameras.json")
-scores = visibility_aware_importance(vertices, cameras)
+scores = visibility_aware_importance(vertices, cameras, mode="opacity_visibility")
 
 importance = scores.importance
 visibility = scores.visibility

@@ -37,7 +37,7 @@ are defined in `docs/project_plan.md`.
 - [x] **Session 15:** Evaluate sensitivity to camera-pose perturbations.
 - [x] **Session 16:** Evaluate image noise, blur, brightness changes, and fewer
   input views.
-- [ ] **Session 17:** Run importance-score ablations.
+- [x] **Session 17:** Run importance-score ablations.
 - [ ] **Session 18:** Document failure cases and practical limitations.
 
 ## Phase 5: Demo and Portfolio
