@@ -165,7 +165,32 @@ def test_visibility_top_k_pruning_uses_camera_aware_importance(
     assert result.output_count == 2
     assert vertices["x"].tolist() == pytest.approx([0.0, 0.1])
     assert metadata["strategy_parameters"]["score"] == "visibility_aware_importance"
+    assert metadata["strategy_parameters"]["importance_mode"] == "opacity_visibility"
     assert metadata["strategy_parameters"]["camera_count"] == 1
+
+
+def test_visibility_top_k_pruning_can_ablate_importance_mode(
+    tmp_path: Path,
+) -> None:
+    source = tmp_path / "source.ply"
+    output = tmp_path / "pruned" / "point_cloud.ply"
+    source_model = tmp_path / "source_model"
+    write_visibility_ply(source)
+    write_cameras_json(source_model / "cameras.json")
+
+    prune_ply(
+        source,
+        output,
+        "visibility-top-k",
+        keep_count=2,
+        importance_mode="opacity_count",
+        source_model_path=source_model,
+    )
+    vertices = read_vertices(output)
+    metadata = json.loads((output.parent / "pruning_metadata.json").read_text())
+
+    assert vertices["z"].tolist() == pytest.approx([4.0, 1.0])
+    assert metadata["strategy_parameters"]["importance_mode"] == "opacity_count"
 
 
 def test_invalid_pruning_arguments_are_rejected(tmp_path: Path) -> None:

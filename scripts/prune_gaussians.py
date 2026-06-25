@@ -53,6 +53,12 @@ def parse_arguments() -> argparse.Namespace:
         help="random seed used by random pruning",
     )
     parser.add_argument(
+        "--importance-mode",
+        choices=("opacity_visibility", "visibility", "opacity_count"),
+        default="opacity_visibility",
+        help="visibility-top-k importance score mode",
+    )
+    parser.add_argument(
         "--source-model-path",
         type=Path,
         help="optional original GraphDeCo model directory for metadata copy",
@@ -87,6 +93,7 @@ def main() -> int:
             keep_fraction=arguments.keep_fraction,
             opacity_threshold=arguments.opacity_threshold,
             seed=arguments.seed,
+            importance_mode=arguments.importance_mode,
             source_model_path=arguments.source_model_path,
             output_model_path=arguments.output_model_path,
         )

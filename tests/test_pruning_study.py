@@ -75,6 +75,28 @@ def test_pruning_study_config_builds_expected_variants() -> None:
     assert "iteration_30000" in str(config.variants[0].point_cloud_path)
 
 
+def test_importance_ablation_config_builds_score_mode_variants() -> None:
+    config = load_pruning_study_config(
+        ROOT_DIR / "configs" / "importance_ablation_lego.yaml",
+        ROOT_DIR,
+    )
+
+    variant_ids = [variant.variant_id for variant in config.variants]
+    modes = {
+        variant.variant_id: variant.importance_mode
+        for variant in config.variants
+        if variant.strategy == "visibility-top-k"
+    }
+
+    assert config.name == "lego_importance_ablation"
+    assert len(config.variants) == 12
+    assert "top_k_keep_050" in variant_ids
+    assert "visibility_top_k_keep_050_opacity_visibility" in variant_ids
+    assert "visibility_top_k_keep_050_visibility" in variant_ids
+    assert "visibility_top_k_keep_050_opacity_count" in variant_ids
+    assert modes["visibility_top_k_keep_050_opacity_count"] == "opacity_count"
+
+
 def test_pruning_study_config_rejects_invalid_fraction(tmp_path: Path) -> None:
     raw = yaml.safe_load(
         (ROOT_DIR / "configs" / "pruning_lego.yaml").read_text(encoding="utf-8")

@@ -119,6 +119,11 @@ def run_prune(config: PruningStudyConfig, variants: tuple[VariantSpec, ...]) -> 
                     variant.strategy,  # type: ignore[arg-type]
                     keep_fraction=variant.keep_fraction,
                     seed=0 if variant.seed is None else variant.seed,
+                    importance_mode=(
+                        "opacity_visibility"
+                        if variant.importance_mode is None
+                        else variant.importance_mode
+                    ),
                     source_model_path=config.baseline_model_path,
                     output_model_path=variant.model_path,
                 )

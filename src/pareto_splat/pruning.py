@@ -15,6 +15,7 @@ from plyfile import PlyData, PlyElement
 
 from pareto_splat.visibility import (
     Camera,
+    ImportanceMode,
     VisibilityError,
     load_cameras_json,
     visibility_aware_importance,
@@ -142,6 +143,8 @@ def top_k_visibility_mask(
     vertices: np.ndarray,
     keep_count: int,
     cameras: Sequence[Camera],
+    *,
+    importance_mode: ImportanceMode = "opacity_visibility",
 ) -> tuple[np.ndarray, dict[str, Any]]:
     """Keep the Gaussians with largest visibility-aware importance score."""
 
@@ -150,13 +153,14 @@ def top_k_visibility_mask(
     if not cameras:
         raise PruningError("visibility-top-k pruning requires at least one camera")
 
-    scores = visibility_aware_importance(vertices, cameras)
+    scores = visibility_aware_importance(vertices, cameras, mode=importance_mode)
     order = np.argsort(scores.importance, kind="stable")
     selected = order[-keep_count:]
     mask = np.zeros(len(vertices), dtype=bool)
     mask[selected] = True
     metadata = {
         "score": "visibility_aware_importance",
+        "importance_mode": importance_mode,
         "camera_count": len(cameras),
         "visible_gaussian_count": int(np.count_nonzero(scores.visibility_count)),
         "mean_visibility_count": float(scores.visibility_count.mean()),
@@ -184,6 +188,7 @@ def prune_mask(
     opacity_threshold: float | None = None,
     seed: int = 0,
     cameras: Sequence[Camera] | None = None,
+    importance_mode: ImportanceMode = "opacity_visibility",
 ) -> tuple[np.ndarray, dict[str, Any]]:
     """Build a pruning mask and strategy-specific metadata."""
 
@@ -221,6 +226,7 @@ def prune_mask(
                 vertices,
                 resolved_keep_count,
                 cameras,
+                importance_mode=importance_mode,
             )
             strategy_metadata = {
                 **visibility_metadata,
@@ -309,6 +315,7 @@ def prune_ply(
     keep_fraction: float | None = None,
     opacity_threshold: float | None = None,
     seed: int = 0,
+    importance_mode: ImportanceMode = "opacity_visibility",
     source_model_path: Path | None = None,
     output_model_path: Path | None = None,
 ) -> PruningResult:
@@ -330,6 +337,7 @@ def prune_ply(
         opacity_threshold=opacity_threshold,
         seed=seed,
         cameras=cameras,
+        importance_mode=importance_mode,
     )
 
     pruned_vertices = vertices[mask].copy()

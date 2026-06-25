@@ -92,6 +92,7 @@ class VariantSpec:
     keep_fraction: float | None = None
     opacity_threshold: float | None = None
     seed: int | None = None
+    importance_mode: str | None = None
 
     @property
     def point_cloud_path(self) -> Path:
@@ -196,20 +197,51 @@ def build_variants(
             pruning["visibility-top-k"],
             "pruning.visibility-top-k",
         )
+        configured_modes = visibility_top_k_config.get("importance_modes")
+        if configured_modes is None:
+            importance_modes: tuple[str | None, ...] = (None,)
+        else:
+            if not isinstance(configured_modes, list) or not configured_modes:
+                raise PruningStudyError(
+                    "pruning.visibility-top-k.importance_modes must be a "
+                    "non-empty list"
+                )
+            importance_modes = tuple(str(mode) for mode in configured_modes)
+            supported_modes = {
+                "opacity_visibility",
+                "visibility",
+                "opacity_count",
+            }
+            unsupported = sorted(set(importance_modes) - supported_modes)
+            if unsupported:
+                raise PruningStudyError(
+                    "unsupported visibility importance mode(s): "
+                    + ", ".join(unsupported)
+                )
         for keep_fraction in _fraction_list(
             visibility_top_k_config,
             "keep_fractions",
         ):
-            variant_id = f"visibility_top_k_keep_{fraction_label(keep_fraction)}"
-            variants.append(
-                VariantSpec(
-                    variant_id=variant_id,
-                    strategy="visibility-top-k",
-                    model_path=output_root / variant_id,
-                    iteration=iteration,
-                    keep_fraction=keep_fraction,
+            for importance_mode in importance_modes:
+                suffix = (
+                    ""
+                    if importance_mode is None
+                    else f"_{importance_mode}"
                 )
-            )
+                variant_id = (
+                    f"visibility_top_k_keep_{fraction_label(keep_fraction)}"
+                    f"{suffix}"
+                )
+                variants.append(
+                    VariantSpec(
+                        variant_id=variant_id,
+                        strategy="visibility-top-k",
+                        model_path=output_root / variant_id,
+                        iteration=iteration,
+                        keep_fraction=keep_fraction,
+                        importance_mode=importance_mode,
+                    )
+                )
 
     if "opacity-threshold" in pruning:
         threshold_config = _mapping(

@@ -5,13 +5,20 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Sequence
+from typing import Any, Literal, Sequence
 
 import numpy as np
 
 
 class VisibilityError(ValueError):
     """Raised when visibility-score inputs are invalid."""
+
+
+ImportanceMode = Literal[
+    "opacity_visibility",
+    "visibility",
+    "opacity_count",
+]
 
 
 @dataclass(frozen=True)
@@ -209,15 +216,19 @@ def visibility_aware_importance(
     vertices: np.ndarray,
     cameras: Sequence[Camera],
     *,
+    mode: ImportanceMode = "opacity_visibility",
     min_depth: float = 1e-6,
     depth_epsilon: float = 1e-6,
 ) -> ImportanceScores:
-    """Compute opacity-weighted visibility importance for PLY vertices.
+    """Compute visibility-derived importance scores for PLY vertices.
 
-    The score is `sigmoid(opacity_logit) * log(1 + visibility)`, where
-    visibility sums inverse-depth weights over cameras whose image bounds
-    contain the Gaussian center.
+    The default score is `sigmoid(opacity_logit) * log(1 + visibility)`,
+    where visibility sums inverse-depth weights over cameras whose image
+    bounds contain the Gaussian center. Alternative modes ablate the opacity
+    and inverse-depth terms.
     """
+    if mode not in {"opacity_visibility", "visibility", "opacity_count"}:
+        raise VisibilityError(f"unsupported importance mode: {mode}")
 
     points = positions_from_vertices(vertices)
     opacity = opacity_from_vertices(vertices)
@@ -227,7 +238,12 @@ def visibility_aware_importance(
         min_depth=min_depth,
         depth_epsilon=depth_epsilon,
     )
-    importance = opacity * np.log1p(visibility)
+    if mode == "opacity_visibility":
+        importance = opacity * np.log1p(visibility)
+    elif mode == "visibility":
+        importance = np.log1p(visibility)
+    else:
+        importance = opacity * np.log1p(visibility_count.astype(np.float64))
     return ImportanceScores(
         opacity=opacity,
         visibility=visibility,

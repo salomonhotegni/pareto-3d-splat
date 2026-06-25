@@ -1,4 +1,5 @@
 import json
+import math
 from pathlib import Path
 
 import numpy as np
@@ -155,3 +156,45 @@ def test_visibility_aware_importance_combines_opacity_and_visibility() -> None:
     assert scores.opacity[0] == pytest.approx(0.5)
     assert scores.importance[0] > scores.importance[1]
     assert scores.importance[2] == 0.0
+
+
+def test_visibility_aware_importance_supports_ablation_modes() -> None:
+    vertices = make_vertices()
+    cameras = [make_camera()]
+
+    default_scores = visibility_aware_importance(
+        vertices,
+        cameras,
+        depth_epsilon=1e-6,
+    )
+    visibility_scores = visibility_aware_importance(
+        vertices,
+        cameras,
+        mode="visibility",
+        depth_epsilon=1e-6,
+    )
+    count_scores = visibility_aware_importance(
+        vertices,
+        cameras,
+        mode="opacity_count",
+        depth_epsilon=1e-6,
+    )
+
+    assert default_scores.importance[0] == pytest.approx(
+        default_scores.opacity[0] * math.log1p(default_scores.visibility[0])
+    )
+    assert visibility_scores.importance[0] == pytest.approx(
+        math.log1p(visibility_scores.visibility[0])
+    )
+    assert count_scores.importance[0] == pytest.approx(
+        count_scores.opacity[0] * math.log1p(count_scores.visibility_count[0])
+    )
+
+
+def test_visibility_aware_importance_rejects_unknown_mode() -> None:
+    with pytest.raises(VisibilityError, match="unsupported importance mode"):
+        visibility_aware_importance(
+            make_vertices(),
+            [make_camera()],
+            mode="not_a_mode",  # type: ignore[arg-type]
+        )
