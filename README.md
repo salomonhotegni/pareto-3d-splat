@@ -11,7 +11,7 @@ and Pareto-front analysis.
 
 ## Project Status
 
-**Sessions 4-18 are complete.** The clean baseline workflow has been run on
+**Sessions 4-19 are complete.** The clean baseline workflow has been run on
 NeRF Synthetic Lego and Drums. Post-training Gaussian pruning supports random,
 opacity-threshold, opacity top-k, and visibility-aware top-k strategies, with
 matched-budget pruning and importance-score ablations on Lego. Pareto
@@ -19,7 +19,8 @@ dominance and non-dominated sorting utilities formalize the
 quality-efficiency objective comparisons, and the summary workflow writes 2D
 and 3D Pareto-front plots. Robustness studies now cover camera-pose
 perturbations, image degradations, brightness shifts, fewer training views,
-and documented failure cases. See the
+and documented failure cases. A static demo can be generated to inspect
+studies and Pareto operating points in a browser. See the
 [Lego baseline report](docs/baseline_results.md), the
 [Drums baseline report](docs/drums_baseline_results.md), and the
 [roadmap](docs/roadmap.md).
@@ -59,7 +60,8 @@ robustness tooling for Session 16 is documented in
 ablations are documented in
 [docs/importance_ablation.md](docs/importance_ablation.md), and observed
 failure cases and practical limitations are summarized in
-[docs/limitations.md](docs/limitations.md).
+[docs/limitations.md](docs/limitations.md). The static demo generator is
+documented in [docs/demo.md](docs/demo.md).
 
 ## Target System
 
@@ -211,6 +213,14 @@ Restrict an input-sensitivity stage to one variant while iterating:
 make input-sensitivity-train INPUT_VARIANT=noise_std_0p02
 make input-sensitivity-evaluate INPUT_VARIANT=noise_std_0p02
 ```
+
+Build the static browser demo from available summary JSON files:
+
+```bash
+make demo
+```
+
+The generated page is written to `results/demo/index.html`.
 
 See [docs/setup.md](docs/setup.md) for troubleshooting and machine-specific
 details, and [docs/dataset_notes.md](docs/dataset_notes.md) for dataset

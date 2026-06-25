@@ -59,3 +59,12 @@ The version-controlled summary of the first complete run is available in
 
 The second-scene summary is available in
 [`docs/drums_baseline_results.md`](../docs/drums_baseline_results.md).
+
+Build the static browser demo from available study summaries with:
+
+```bash
+make demo
+```
+
+The generated page is written to `results/demo/index.html`. The demo itself is
+not committed by default; see [`docs/demo.md`](../docs/demo.md) for details.

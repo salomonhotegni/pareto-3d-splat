@@ -42,7 +42,7 @@ are defined in `docs/project_plan.md`.
 
 ## Phase 5: Demo and Portfolio
 
-- [ ] **Session 19:** Build a demo for selecting scenes and Pareto operating
+- [x] **Session 19:** Build a demo for selecting scenes and Pareto operating
   points.
 - [ ] **Session 20:** Produce comparison images, videos, plots, and a pipeline
   diagram.
