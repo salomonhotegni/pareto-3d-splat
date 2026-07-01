@@ -1,85 +1,93 @@
 # Pareto-Splat
 
-Pareto-Splat studies quality-efficiency trade-offs in 3D Gaussian Splatting by
-optimizing reconstructed scenes for visual quality, rendering speed, and memory
-footprint.
+Pareto-Splat is a reproducible research pipeline for studying quality, speed,
+and model-size trade-offs in
+[3D Gaussian Splatting](https://github.com/graphdeco-inria/gaussian-splatting).
+It wraps a pinned GraphDeCo baseline with held-out evaluation, CUDA profiling,
+post-training Gaussian pruning, Pareto-front analysis, controlled robustness
+studies, and presentation tooling.
 
-The project starts from the official
-[3D Gaussian Splatting](https://github.com/graphdeco-inria/gaussian-splatting)
-implementation and provides reproducible evaluation, Gaussian pruning methods,
-robustness studies, and Pareto-front analysis.
+The 24-session project roadmap is complete. For a method-first introduction,
+read the [detailed project article](docs/article.md).
 
-## Project Status
+## Highlights
 
-**Sessions 1-23 are complete.** The clean baseline workflow has been run on
-NeRF Synthetic Lego and Drums. Post-training Gaussian pruning supports random,
-opacity-threshold, opacity top-k, and visibility-aware top-k strategies, with
-matched-budget pruning and importance-score ablations on Lego. Pareto
-dominance and non-dominated sorting utilities formalize the
-quality-efficiency objective comparisons, and the summary workflow writes 2D
-and 3D Pareto-front plots. Robustness studies now cover camera-pose
-perturbations, image degradations, brightness shifts, fewer training views,
-and documented failure cases. A static demo can be generated to inspect
-studies and Pareto operating points in a browser, and a portfolio asset builder
-packages comparison panels, plots, videos, and the pipeline diagram. See the
-[Lego baseline report](docs/baseline_results.md), the
-[Drums baseline report](docs/drums_baseline_results.md), and the
-[roadmap](docs/roadmap.md).
+- Configuration-driven training, rendering, evaluation, and profiling.
+- PSNR, SSIM, and LPIPS-VGG over all 200 held-out test views.
+- Random, opacity-threshold, opacity top-k, and visibility-aware pruning.
+- Matched-budget comparisons and 2D/3D non-dominated fronts.
+- Camera-pose, image degradation, brightness, and sparse-view studies.
+- Reproducible run metadata, dataset checksums, resumable checkpoints, and
+  72 automated tests.
+- Static result explorer and generated portfolio asset bundle.
 
-## Baseline Results
+## Key Result
 
-| Quality / efficiency metric | Result |
-| --- | ---: |
-| PSNR | 35.9166 dB |
-| SSIM | 0.983729 |
-| LPIPS-VGG | 0.019002 |
-| Renderer throughput | 282.98 FPS |
-| Mean render latency | 3.534 ms |
-| Gaussian count | 299,799 |
-| Serialized model size | 70.91 MiB |
-| Peak allocated GPU memory | 282.92 MiB |
+On NeRF Synthetic Lego with seed 0, retaining the 75% most opaque Gaussians
+produced the strongest demonstrated compression point:
 
-Quality metrics use all 200 held-out 800 x 800 test views. Renderer throughput
-uses 600 CUDA-event measurements on an NVIDIA A100-SXM4-40GB and excludes
-image encoding and disk writes.
+| Metric | Baseline | 75% opacity top-k | Change |
+| --- | ---: | ---: | ---: |
+| Gaussian count | 299,799 | 224,849 | -25.0% |
+| Serialized size | 70.91 MiB | 53.18 MiB | -25.0% |
+| Renderer throughput | 282.98 FPS | 456.45 FPS | +61.3% |
+| PSNR | 35.917 dB | 34.496 dB | -1.421 dB |
+| SSIM | 0.983729 | 0.980445 | -0.003284 |
+| LPIPS-VGG | 0.019002 | 0.021636 | +0.002634 |
 
-The second Drums baseline reached 26.1724 dB PSNR, 0.955651 SSIM, and 0.043743
-LPIPS-VGG with 318,647 Gaussians. See
-[the Drums report](docs/drums_baseline_results.md) for its complete quality
-and efficiency profile.
+Quality metrics use 200 held-out 800 x 800 views. Throughput is
+renderer-only, measured with CUDA events on an NVIDIA A100-SXM4-40GB; it
+excludes image encoding, storage, viewer, and network overhead.
 
-Post-training pruning is documented in [docs/pruning.md](docs/pruning.md), and
-the pruning study workflow and Session 10 results are documented in
-[docs/pruning_study.md](docs/pruning_study.md). Pareto objective definitions,
-dominance, non-dominated sorting, and front visualization are documented in
-[docs/pareto.md](docs/pareto.md). Visibility-aware scoring is documented in
-[docs/visibility_importance.md](docs/visibility_importance.md). The
-camera-pose perturbation workflow for Session 15 is documented in
-[docs/pose_sensitivity.md](docs/pose_sensitivity.md). Training-input
-robustness tooling for Session 16 is documented in
-[docs/input_sensitivity.md](docs/input_sensitivity.md). Importance-score
-ablations are documented in
-[docs/importance_ablation.md](docs/importance_ablation.md), and observed
-failure cases and practical limitations are summarized in
-[docs/limitations.md](docs/limitations.md). The static demo generator is
-documented in [docs/demo.md](docs/demo.md). Portfolio assets and the pipeline
-diagram are documented in [docs/portfolio_assets.md](docs/portfolio_assets.md)
-and [docs/pipeline.md](docs/pipeline.md). The first full technical report
-is available in [docs/technical_report.md](docs/technical_report.md), with its
-final claim scope recorded in
-[docs/claims_and_evidence.md](docs/claims_and_evidence.md).
+The clean workflow was also validated on NeRF Synthetic Drums. Pruning,
+ablation, and robustness conclusions remain primarily Lego-only and use one
+seed, so they are point estimates rather than statistically significant or
+scene-general results.
 
-For a clean-room reproduction, follow the ordered
-[reproducibility protocol](docs/reproducibility.md). Run `make help` for a
-compact index of available workflow targets.
+## Method
 
-## Presentation Materials
+Each model variant \(x\) is compared with the default objective vector:
 
-- [Portfolio summary](docs/portfolio_summary.md)
-- [Technical blog post](docs/blog_post.md)
-- [Resume bullets](docs/resume_bullets.md)
-- [Interview guide](docs/interview_guide.md)
-- [Full technical report](docs/technical_report.md)
+```math
+f(x) =
+\left[
+\mathrm{PSNR}(x),
+\mathrm{FPS}(x),
+-\mathrm{SizeMiB}(x)
+\right].
+```
+
+A variant is Pareto-optimal within the measured set when no other variant is
+at least as good in every objective and strictly better in one. The project
+uses this analysis to expose deployment choices rather than collapse quality,
+speed, and size into one arbitrary weighted score.
+
+Post-training pruning selects an unchanged subset of the trained Gaussian PLY.
+The strongest tested rule ranks each Gaussian by activated opacity:
+
+```math
+\alpha_i = \sigma(o_i),
+\qquad
+G' = \operatorname{TopK}(G, \alpha, k).
+```
+
+See the [technical report](docs/technical_report.md) or
+[detailed article](docs/article.md) for the complete method and results.
+
+## Documentation
+
+| Goal | Document |
+| --- | --- |
+| Understand the complete method | [Detailed article](docs/article.md) |
+| Read the formal project report | [Technical report](docs/technical_report.md) |
+| Reproduce the experiments | [Reproducibility protocol](docs/reproducibility.md) |
+| Review claim boundaries | [Claims and evidence](docs/claims_and_evidence.md) |
+| Inspect baseline results | [Lego](docs/baseline_results.md) and [Drums](docs/drums_baseline_results.md) |
+| Understand pruning and Pareto sorting | [Pruning](docs/pruning.md) and [Pareto analysis](docs/pareto.md) |
+| Review ablations and failures | [Importance ablation](docs/importance_ablation.md) and [limitations](docs/limitations.md) |
+| Review robustness studies | [Pose sensitivity](docs/pose_sensitivity.md) and [input sensitivity](docs/input_sensitivity.md) |
+| Build the demo and visual assets | [Demo](docs/demo.md) and [portfolio assets](docs/portfolio_assets.md) |
+| Use presentation materials | [Portfolio summary](docs/portfolio_summary.md), [blog post](docs/blog_post.md), and [interview guide](docs/interview_guide.md) |
 
 ## Target System
 
@@ -96,167 +104,33 @@ CUDA extensions.
 
 ## Quick Start
 
-Create or update the project environment:
-
-```bash
-conda env update --name pareto3dsplat --file environment.yml --prune
-conda activate pareto3dsplat
-```
-
-Download the pinned baseline and compile its CUDA extensions:
-
-```bash
-bash scripts/bootstrap_baseline.sh
-bash scripts/install_baseline.sh
-```
-
-Validate the complete setup:
-
-```bash
-python scripts/check_environment.py --require-baseline
-```
-
-Run the deterministic project tests:
-
-```bash
-make test
-```
-
-The equivalent Make targets are:
+Create the Conda environment, install the pinned GraphDeCo baseline, validate
+the GPU stack, and run the tests:
 
 ```bash
 make env
 make install
 make check
+make test
 ```
 
-Download and validate the first dataset:
+Download and validate Lego, then run the clean baseline:
 
 ```bash
-make dataset
-make check-data
-```
-
-Prepare the second NeRF Synthetic Drums scene:
-
-```bash
-make dataset-drums
-make check-data-drums
-```
-
-Train the baseline:
-
-```bash
+make dataset-lego
+make check-data-lego
 make train-baseline
-```
-
-All experiment-specific settings are loaded from `configs/baseline.yaml`.
-Select another configuration without editing scripts:
-
-```bash
-make train-baseline CONFIG=configs/another_scene.yaml
-make render-baseline CONFIG=configs/another_scene.yaml
-make evaluate-baseline CONFIG=configs/another_scene.yaml
-make profile-baseline CONFIG=configs/another_scene.yaml
-```
-
-After training, render the held-out test views with corrected NeRF Synthetic
-alpha compositing:
-
-```bash
 make render-baseline
-```
-
-Evaluate all 200 held-out views with PSNR, SSIM, and LPIPS-VGG:
-
-```bash
 make evaluate-baseline
-```
-
-Profile renderer-only FPS, latency, GPU memory, Gaussian count, and model size:
-
-```bash
 make profile-baseline
 ```
 
-Create a labeled side-by-side orbit video:
+Run `make help` for the command index. Follow the
+[reproducibility protocol](docs/reproducibility.md) for Drums, pruning,
+importance ablations, robustness studies, and artifact generation.
 
-```bash
-make comparison-video
-```
-
-Create, render, evaluate, profile, and summarize the default Lego pruning study:
-
-```bash
-make pruning-study-prune
-make pruning-study-render
-make pruning-study-evaluate
-make pruning-study-profile
-make pruning-study-summarize
-```
-
-Restrict render/evaluate/profile stages to one pruning variant while iterating:
-
-```bash
-make pruning-study-render PRUNING_VARIANT=top_k_keep_050
-make pruning-study-evaluate PRUNING_VARIANT=top_k_keep_050
-make pruning-study-profile PRUNING_VARIANT=top_k_keep_050
-```
-
-Prepare, render, evaluate, and summarize the default Lego camera-pose
-sensitivity study:
-
-```bash
-make pose-sensitivity-prepare
-make pose-sensitivity-render
-make pose-sensitivity-evaluate
-make pose-sensitivity-summarize
-```
-
-Restrict a pose-sensitivity stage to one perturbation variant while iterating:
-
-```bash
-make pose-sensitivity-render POSE_VARIANT=rot_0p25deg
-make pose-sensitivity-evaluate POSE_VARIANT=rot_0p25deg
-```
-
-Prepare, train, render, evaluate, and summarize the default Lego
-training-input sensitivity study:
-
-```bash
-make input-sensitivity-prepare
-make input-sensitivity-train
-make input-sensitivity-render
-make input-sensitivity-evaluate
-make input-sensitivity-summarize
-```
-
-Restrict an input-sensitivity stage to one variant while iterating:
-
-```bash
-make input-sensitivity-train INPUT_VARIANT=noise_std_0p02
-make input-sensitivity-evaluate INPUT_VARIANT=noise_std_0p02
-```
-
-Build the static browser demo from available summary JSON files:
-
-```bash
-make demo
-```
-
-The generated page is written to `results/demo/index.html`.
-
-Build curated local portfolio assets:
-
-```bash
-make portfolio-assets
-```
-
-The generated bundle is written to `results/portfolio/`.
-
-See [docs/setup.md](docs/setup.md) for troubleshooting and machine-specific
-details, and [docs/dataset_notes.md](docs/dataset_notes.md) for dataset
-provenance and format checks.
+Environment troubleshooting is documented in [setup.md](docs/setup.md).
+Dataset provenance is documented in [dataset_notes.md](docs/dataset_notes.md).
 
 ## Repository Layout
 
