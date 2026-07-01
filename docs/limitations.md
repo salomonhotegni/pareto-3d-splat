@@ -9,6 +9,17 @@ an additional clean Drums baseline. Most robustness and pruning conclusions
 come from Lego, so they should be treated as scene-specific until repeated on
 more datasets.
 
+All experiments use seed 0. If a reported effect is written as
+
+```math
+\Delta m = m_{\mathrm{variant}} - m_{\mathrm{reference}},
+```
+
+then \(\Delta m\) is an observed point estimate. One run per condition cannot
+measure run-to-run variance, confidence intervals, or statistical
+significance. Small metric differences should therefore not be interpreted as
+stable expected improvements without multi-seed replication.
+
 ## 1. Camera-Pose Accuracy Is a Hard Requirement
 
 The pose-sensitivity study keeps the trained Gaussian model fixed and perturbs
@@ -198,7 +209,12 @@ Efficiency numbers also have a fixed measurement scope. Profiling uses CUDA
 events over renderer calls and excludes PNG encoding, disk writes, data loading,
 viewer overhead, and network transport. Reported FPS is therefore a
 renderer-only measurement on the tested GPU, not an end-to-end application FPS
-guarantee.
+guarantee. Lego and Drums were also profiled on different A100 memory variants,
+so their FPS values are not a controlled cross-scene hardware comparison.
+
+Post-training pruning is evaluated without fine-tuning. The results isolate
+the effect of selecting and removing Gaussians, but they do not establish how
+much quality could be recovered by optimizing the retained representation.
 
 ## Practical Guidance
 
@@ -213,6 +229,8 @@ guarantee.
 - Report hardware and profiling scope whenever reporting FPS or latency.
 - Repeat pruning and robustness studies on more scenes before making
   scene-general claims.
+- Treat reported differences as single-seed point estimates until multi-seed
+  experiments quantify uncertainty.
 
 ## Future Work
 

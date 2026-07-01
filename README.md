@@ -11,7 +11,7 @@ and Pareto-front analysis.
 
 ## Project Status
 
-**Sessions 4-21 are complete.** The clean baseline workflow has been run on
+**Sessions 4-22 are complete.** The clean baseline workflow has been run on
 NeRF Synthetic Lego and Drums. Post-training Gaussian pruning supports random,
 opacity-threshold, opacity top-k, and visibility-aware top-k strategies, with
 matched-budget pruning and importance-score ablations on Lego. Pareto
@@ -65,7 +65,9 @@ failure cases and practical limitations are summarized in
 documented in [docs/demo.md](docs/demo.md). Portfolio assets and the pipeline
 diagram are documented in [docs/portfolio_assets.md](docs/portfolio_assets.md)
 and [docs/pipeline.md](docs/pipeline.md). The first full technical report
-draft is available in [docs/technical_report.md](docs/technical_report.md).
+is available in [docs/technical_report.md](docs/technical_report.md), with its
+final claim scope recorded in
+[docs/claims_and_evidence.md](docs/claims_and_evidence.md).
 
 ## Target System
 

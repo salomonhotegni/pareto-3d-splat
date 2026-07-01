@@ -47,7 +47,7 @@ are defined in `docs/project_plan.md`.
 - [x] **Session 20:** Produce comparison images, videos, plots, and a pipeline
   diagram.
 - [x] **Session 21:** Write the technical report draft.
-- [ ] **Session 22:** Finalize experiments, claims, and limitations.
+- [x] **Session 22:** Finalize experiments, claims, and limitations.
 - [ ] **Session 23:** Polish repository documentation and reproducibility.
 - [ ] **Session 24:** Prepare the portfolio summary, blog post, resume bullet,
   and interview explanation.

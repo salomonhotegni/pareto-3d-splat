@@ -1,4 +1,4 @@
-# Pareto-Splat Technical Report Draft
+# Pareto-Splat Technical Report
 
 ## Abstract
 
@@ -355,6 +355,12 @@ as a second clean baseline, but the pruning, robustness, and ablation studies
 are mostly Lego-only. The scenes are synthetic, static, object-centric, and
 cleanly segmented.
 
+All reported experiments use seed 0. The measured differences are therefore
+point estimates rather than estimates of expected performance across random
+initializations. With one run per condition, the project cannot estimate
+run-to-run variance or confidence intervals. Profiling results are also tied
+to the tested A100 hardware and renderer-only measurement procedure.
+
 The strongest measured limitations are:
 
 - camera-pose perturbations can dominate quality;
@@ -366,7 +372,8 @@ The strongest measured limitations are:
   and network transport.
 
 The report should not claim scene-general robustness or real-world deployment
-readiness yet.
+readiness yet. The complete claim-to-evidence audit is recorded in
+[claims_and_evidence.md](claims_and_evidence.md).
 
 ## 12. Future Work
 
@@ -383,7 +390,7 @@ The most useful next steps are:
 - compare Pareto fronts under expanded objective sets that include LPIPS,
   memory, latency, and worst-view quality.
 
-## 13. Summary of Claims
+## 13. Final Claims
 
 The current defensible claims are:
 
@@ -400,6 +407,11 @@ The current defensible claims are:
 5. The current pipeline is highly sensitive to pose perturbations and
    train-test appearance shifts, so robustness claims must remain narrow.
 
+These are empirical claims scoped to the tested scenes and seed. In
+particular, "strongest demonstrated compression point" describes the tested
+Lego operating points; it does not assert that 75% retention is optimal for
+other scenes, hardware, objectives, or pruning methods.
+
 ## References Within This Repository
 
 - [Project plan](project_plan.md)
@@ -412,6 +424,7 @@ The current defensible claims are:
 - [Pose sensitivity](pose_sensitivity.md)
 - [Input sensitivity](input_sensitivity.md)
 - [Limitations](limitations.md)
+- [Claims and evidence](claims_and_evidence.md)
 - [Demo](demo.md)
 - [Portfolio assets](portfolio_assets.md)
 - [Pipeline diagram](pipeline.md)
