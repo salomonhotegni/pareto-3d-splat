@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 
 import pytest
@@ -11,6 +12,24 @@ from pareto_splat.profiling import read_ply_vertex_count, summarize_latencies
 
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
+
+
+def test_local_markdown_links_resolve() -> None:
+    markdown_paths = [ROOT_DIR / "README.md", *(ROOT_DIR / "docs").glob("*.md")]
+    link_pattern = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
+    missing: list[str] = []
+
+    for markdown_path in markdown_paths:
+        text = markdown_path.read_text(encoding="utf-8")
+        for target in link_pattern.findall(text):
+            if target.startswith(("#", "http://", "https://", "mailto:")):
+                continue
+            relative_target = target.split("#", maxsplit=1)[0]
+            resolved = (markdown_path.parent / relative_target).resolve()
+            if not resolved.exists():
+                missing.append(f"{markdown_path.relative_to(ROOT_DIR)} -> {target}")
+
+    assert not missing, "Broken local Markdown links:\n" + "\n".join(missing)
 
 
 def test_package_version() -> None:

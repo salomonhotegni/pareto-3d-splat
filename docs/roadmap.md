@@ -48,6 +48,6 @@ are defined in `docs/project_plan.md`.
   diagram.
 - [x] **Session 21:** Write the technical report draft.
 - [x] **Session 22:** Finalize experiments, claims, and limitations.
-- [ ] **Session 23:** Polish repository documentation and reproducibility.
+- [x] **Session 23:** Polish repository documentation and reproducibility.
 - [ ] **Session 24:** Prepare the portfolio summary, blog post, resume bullet,
   and interview explanation.

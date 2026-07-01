@@ -6,12 +6,12 @@ footprint.
 
 The project starts from the official
 [3D Gaussian Splatting](https://github.com/graphdeco-inria/gaussian-splatting)
-implementation and will add reproducible evaluation, Gaussian pruning methods,
-and Pareto-front analysis.
+implementation and provides reproducible evaluation, Gaussian pruning methods,
+robustness studies, and Pareto-front analysis.
 
 ## Project Status
 
-**Sessions 4-22 are complete.** The clean baseline workflow has been run on
+**Sessions 1-23 are complete.** The clean baseline workflow has been run on
 NeRF Synthetic Lego and Drums. Post-training Gaussian pruning supports random,
 opacity-threshold, opacity top-k, and visibility-aware top-k strategies, with
 matched-budget pruning and importance-score ablations on Lego. Pareto
@@ -69,6 +69,10 @@ is available in [docs/technical_report.md](docs/technical_report.md), with its
 final claim scope recorded in
 [docs/claims_and_evidence.md](docs/claims_and_evidence.md).
 
+For a clean-room reproduction, follow the ordered
+[reproducibility protocol](docs/reproducibility.md). Run `make help` for a
+compact index of available workflow targets.
+
 ## Target System
 
 - Linux
@@ -102,6 +106,12 @@ Validate the complete setup:
 
 ```bash
 python scripts/check_environment.py --require-baseline
+```
+
+Run the deterministic project tests:
+
+```bash
+make test
 ```
 
 The equivalent Make targets are:

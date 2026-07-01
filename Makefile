@@ -14,7 +14,32 @@ INPUT_VARIANT_ARG := $(if $(INPUT_VARIANT),--variant $(INPUT_VARIANT),)
 DEMO_OUTPUT ?= results/demo/index.html
 PORTFOLIO_OUTPUT ?= results/portfolio
 
-.PHONY: env baseline install dataset dataset-lego dataset-drums check-data check-data-lego check-data-drums train-baseline render-baseline evaluate-baseline profile-baseline comparison-video pruning-study-prune pruning-study-render pruning-study-evaluate pruning-study-profile pruning-study-summarize pose-sensitivity-prepare pose-sensitivity-render pose-sensitivity-evaluate pose-sensitivity-profile pose-sensitivity-summarize input-sensitivity-prepare input-sensitivity-train input-sensitivity-render input-sensitivity-evaluate input-sensitivity-profile input-sensitivity-summarize demo portfolio-assets check check-core test
+.PHONY: help env baseline install dataset dataset-lego dataset-drums check-data check-data-lego check-data-drums train-baseline render-baseline evaluate-baseline profile-baseline comparison-video pruning-study-prune pruning-study-render pruning-study-evaluate pruning-study-profile pruning-study-summarize pose-sensitivity-prepare pose-sensitivity-render pose-sensitivity-evaluate pose-sensitivity-profile pose-sensitivity-summarize input-sensitivity-prepare input-sensitivity-train input-sensitivity-render input-sensitivity-evaluate input-sensitivity-profile input-sensitivity-summarize demo portfolio-assets check check-core test
+
+help:
+	@printf '%s\n' \
+		'Pareto-Splat workflow targets' \
+		'' \
+		'Setup and validation:' \
+		'  env, install, check, check-core, test' \
+		'Datasets:' \
+		'  dataset-lego, check-data-lego, dataset-drums, check-data-drums' \
+		'Clean baseline:' \
+		'  train-baseline, render-baseline, evaluate-baseline, profile-baseline' \
+		'Pruning study:' \
+		'  pruning-study-{prune,render,evaluate,profile,summarize}' \
+		'Robustness studies:' \
+		'  pose-sensitivity-{prepare,render,evaluate,profile,summarize}' \
+		'  input-sensitivity-{prepare,train,render,evaluate,profile,summarize}' \
+		'Presentation:' \
+		'  comparison-video, demo, portfolio-assets' \
+		'' \
+		'Common overrides:' \
+		'  CONDA_ENV, CONFIG, PRUNING_CONFIG, PRUNING_VARIANT' \
+		'  POSE_SENSITIVITY_CONFIG, POSE_VARIANT' \
+		'  INPUT_SENSITIVITY_CONFIG, INPUT_VARIANT' \
+		'' \
+		'See docs/reproducibility.md for the ordered end-to-end protocol.'
 
 env:
 	conda env update --name $(CONDA_ENV) --file environment.yml --prune

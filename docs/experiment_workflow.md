@@ -2,7 +2,8 @@
 
 The training, rendering, quality evaluation, and efficiency profiling stages
 load experiment settings from one YAML file. The default configuration is
-`configs/baseline.yaml`.
+`configs/baseline.yaml`. The complete clean-room command sequence is documented
+in [reproducibility.md](reproducibility.md).
 
 ## Run Stages
 
@@ -51,3 +52,21 @@ training duration. The render iteration must be one of the saved iterations.
 Each training attempt snapshots the selected YAML alongside the exact command,
 dataset checksums, environment metadata, logs, and completion status. Render,
 metric, and profile outputs continue to use the configured model directory.
+
+## Output Contract
+
+The clean baseline configurations write to:
+
+```text
+results/baseline/<scene>/seed_<seed>/
+```
+
+Study configurations declare their own `output_root` beneath `results/`.
+Machine-readable metrics, profiles, per-view values, and summaries are JSON;
+plots, rendered images, and videos are derived artifacts. The entire
+`results/` tree is ignored by Git so experiments cannot accidentally inflate
+the source repository.
+
+When reporting a result, preserve the configuration snapshot and environment
+metadata written by the workflow. Record the repository revision separately
+with `git rev-parse HEAD`.

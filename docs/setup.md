@@ -2,7 +2,7 @@
 
 ## Supported Target
 
-The initial supported system is:
+The tested reference system is:
 
 | Component | Target |
 |---|---|
@@ -42,12 +42,16 @@ upstream implementation.
 From the repository root:
 
 ```bash
-conda env update --name pareto3dsplat --file environment.yml --prune
-conda activate pareto3dsplat
-bash scripts/bootstrap_baseline.sh
-bash scripts/install_baseline.sh
-python scripts/check_environment.py --require-baseline
+make env
+make install
+make check
+make test
 ```
+
+These targets use the `pareto3dsplat` Conda environment without requiring it
+to remain activated. Set `CONDA_ENV=<name>` on each Make invocation to use a
+different environment. Direct script equivalents remain available for
+debugging.
 
 The extension installer defaults to `TORCH_CUDA_ARCH_LIST=8.0`, the compute
 capability of the A100. Override it before installation when targeting another
@@ -102,3 +106,6 @@ Remove pip's installed extension packages and reinstall:
 python -m pip uninstall -y diff-gaussian-rasterization simple-knn fused-ssim
 bash scripts/install_baseline.sh
 ```
+
+For the ordered dataset, baseline, study, and artifact-generation commands,
+follow [reproducibility.md](reproducibility.md).
