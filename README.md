@@ -73,6 +73,14 @@ For a clean-room reproduction, follow the ordered
 [reproducibility protocol](docs/reproducibility.md). Run `make help` for a
 compact index of available workflow targets.
 
+## Presentation Materials
+
+- [Portfolio summary](docs/portfolio_summary.md)
+- [Technical blog post](docs/blog_post.md)
+- [Resume bullets](docs/resume_bullets.md)
+- [Interview guide](docs/interview_guide.md)
+- [Full technical report](docs/technical_report.md)
+
 ## Target System
 
 - Linux
