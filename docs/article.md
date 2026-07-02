@@ -286,8 +286,8 @@ NeRF Synthetic foreground objects are stored with an alpha channel. The RGB
 values in transparent pixels are not, by themselves, the final image that
 should be compared against a white-background render.
 
-For foreground color \(\mathbf{F}(p)\), alpha \(A(p)\), and background color
-\(\mathbf{B}\), the correct composite is:
+For foreground color $\mathbf{F}(p)$, alpha $A(p)$, and background color
+$\mathbf{B}$, the correct composite is:
 
 ```math
 \mathbf{I}(p)
