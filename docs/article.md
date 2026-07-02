@@ -168,7 +168,7 @@ trained.
 
 ## 2. Why This Is a Multi-Objective Problem
 
-For a trained or pruned model variant \(x\), the project observes several
+For a trained or pruned model variant $x$, the project observes several
 quantities:
 
 - reconstruction quality;
@@ -189,10 +189,10 @@ J(x)
 =
 \lambda_q Q(x)
 + \lambda_s S(x)
-- \lambda_m M(x),
++ \lambda_m M(x),
 ```
 
-but the weights \(\lambda_q,\lambda_s,\lambda_m\) encode a deployment decision
+but the weights $\lambda_q,\lambda_s,\lambda_m$ encode a deployment decision
 before the experiments have even shown the available trade-offs. They also
 depend on metric scale. A one-unit change in FPS is not directly comparable to
 a one-unit change in PSNR or MiB.
