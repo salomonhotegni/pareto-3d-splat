@@ -61,11 +61,11 @@ g_i =
 
 where:
 
-- \(\boldsymbol{\mu}_i \in \mathbb{R}^3\) is the 3D center;
-- \(\boldsymbol{\Sigma}_i \in \mathbb{R}^{3 \times 3}\) is the 3D covariance,
+- $\boldsymbol{\mu}_i \in \mathbb{R}^3$ is the 3D center;
+- $\boldsymbol{\Sigma}_i \in \mathbb{R}^{3 \times 3}$ is the 3D covariance,
   which controls size, orientation, and anisotropic shape;
-- \(\alpha_i \in (0,1)\) is opacity;
-- \(\mathbf{c}_i\) contains view-dependent color coefficients, represented by
+- $\alpha_i \in (0,1)$ is opacity;
+- $\mathbf{c}_i$ contains view-dependent color coefficients, represented by
   spherical harmonics in the GraphDeCo model.
 
 In the serialized GraphDeCo PLY, the covariance is represented through learned
