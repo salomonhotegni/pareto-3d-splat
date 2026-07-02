@@ -68,7 +68,7 @@ The strongest tested rule ranks each Gaussian by activated opacity:
 ```math
 \alpha_i = \sigma(o_i),
 \qquad
-G' = \operatorname{TopK}(G, \alpha, k).
+G' = \text{TopK}(G, \alpha, k).
 ```
 
 See the [technical report](docs/technical_report.md) or
