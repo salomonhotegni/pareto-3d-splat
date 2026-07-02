@@ -872,7 +872,7 @@ d_j
 \end{cases}
 ```
 
-For raw objective value \(f_j(x)\), define:
+For raw objective value $f_j(x)$, define:
 
 ```math
 u_j(x)
@@ -890,7 +890,7 @@ The library supports objective groups beyond the default front:
 
 ### 11.2 Dominance
 
-Variant \(a\) dominates variant \(b\) when:
+Variant $a$ dominates variant $b$ when:
 
 ```math
 \forall j,\;
@@ -907,7 +907,7 @@ u_j(a) > u_j(b).
 The strict condition means equal points do not dominate each other.
 
 The implementation also accepts a non-negative numerical tolerance
-\(\delta\). Under tolerance, \(a\) is considered no worse when:
+$\delta$. Under tolerance, $a$ is considered no worse when:
 
 ```math
 u_j(a)
@@ -936,12 +936,12 @@ F_0
 \{
 x \in P
 \mid
-\nexists y \in P:
+∄ y \in P:
 y \succ x
 \}.
 ```
 
-Remove \(F_0\), then repeat:
+Remove $F_0$, then repeat:
 
 ```math
 F_1
@@ -949,7 +949,7 @@ F_1
 \{
 x \in P\setminus F_0
 \mid
-\nexists y \in P\setminus F_0:
+∄ y \in P\setminus F_0:
 y \succ x
 \}.
 ```
@@ -957,7 +957,7 @@ y \succ x
 This produces zero-based ranks:
 
 ```math
-\operatorname{rank}(x)=k
+\text{rank}(x)=k
 \quad \text{when} \quad
 x \in F_k.
 ```
@@ -980,7 +980,7 @@ non-dominated in 3D.
 
 ## 12. Camera-Pose Sensitivity
 
-The clean test metrics assume accurate camera calibration. Session 15 tests
+The clean test metrics assume accurate camera calibration. We test
 that assumption while keeping the trained Gaussian model fixed.
 
 ### 12.1 Pose perturbation model
@@ -1095,8 +1095,8 @@ Positive values indicate degradation.
 
 ## 13. Training-Input Sensitivity
 
-Session 16 asks a different robustness question. Instead of perturbing test
-poses for a fixed model, it changes the training observations and retrains each
+Here, we ask a different robustness question. Instead of perturbing test
+poses for a fixed model, we change the training observations and retrain each
 variant.
 
 The clean training set is:
