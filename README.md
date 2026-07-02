@@ -150,7 +150,7 @@ The baseline is the official GraphDeco-INRIA implementation pinned to commit
 `54c035f7834b564019656c3e3fcc3646292f727d`. The pin prevents upstream changes
 from silently changing experiment results.
 
-## License
+## License 
 
 Pareto-Splat is licensed under the MIT License. The downloaded 3D Gaussian
 Splatting baseline retains its own license and attribution.
