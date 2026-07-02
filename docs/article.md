@@ -685,14 +685,14 @@ a CPU-only geometric proxy.
 
 ### 9.1 Camera projection
 
-For camera \(c\), GraphDeCo exports:
+For camera $c$, GraphDeCo exports:
 
-- camera center \(\mathbf{C}_c\);
-- camera-to-world rotation \(\mathbf{R}_c\);
-- image width \(W_c\) and height \(H_c\);
-- focal lengths \(f_{x,c}\) and \(f_{y,c}\).
+- camera center $\mathbf{C}_c$;
+- camera-to-world rotation $\mathbf{R}_c$;
+- image width $W_c$ and height $H_c$;
+- focal lengths $f_{x,c}$ and $f_{y,c}$.
 
-For Gaussian center \(\mathbf{x}_i\), camera-space coordinates are:
+For Gaussian center $\mathbf{x}_i$, camera-space coordinates are:
 
 ```math
 \mathbf{p}_{ic}
