@@ -160,7 +160,7 @@ without retraining. The study includes:
 For a target retention fraction \(r\), fixed-budget variants keep:
 
 ```math
-k = \operatorname{round}(rN)
+k = \text{round}(rN)
 ```
 
 Gaussians from the source model. Opacity top-k ranks Gaussians by activated
