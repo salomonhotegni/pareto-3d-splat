@@ -61,8 +61,8 @@ g_i =
 
 where:
 
-- $\boldsymbol{\mu}_i \in \mathbb{R}^3$ is the 3D center;
-- $\boldsymbol{\Sigma}_i \in \mathbb{R}^{3 \times 3}$ is the 3D covariance,
+- $\boldsymbol{\mu}_i \in ℝ^3$ is the 3D center;
+- $\boldsymbol{\Sigma}_i \in ℝ^{3 \times 3}$ is the 3D covariance,
   which controls size, orientation, and anisotropic shape;
 - $\alpha_i \in (0,1)$ is opacity;
 - $\mathbf{c}_i$ contains view-dependent color coefficients, represented by
@@ -81,11 +81,11 @@ conceptual level, it can be written as:
 \mathbf{R}_i^{\mathsf{T}},
 ```
 
-where \(\mathbf{R}_i\) is derived from a learned rotation and
-\(\mathbf{S}_i\) is a scale matrix. This parameterization keeps the covariance
+where $\mathbf{R}_i$ is derived from a learned rotation and
+$\mathbf{S}_i$ is a scale matrix. This parameterization keeps the covariance
 valid while allowing elongated, rotated Gaussians.
 
-The PLY stores opacity as a raw logit \(o_i\). Its activated opacity is:
+The PLY stores opacity as a raw logit $o_i$. Its activated opacity is:
 
 ```math
 \alpha_i
@@ -96,7 +96,7 @@ The PLY stores opacity as a raw logit \(o_i\). Its activated opacity is:
 ```
 
 This distinction becomes important during pruning because a threshold such as
-\(\alpha_i \ge 0.1\) must be interpreted in probability space, even though
+$\alpha_i \ge 0.1$ must be interpreted in probability space, even though
 the file contains logits.
 
 ### 1.2 Why "splatting" is fast
@@ -105,7 +105,7 @@ For a new camera, each 3D Gaussian is projected into image space, producing an
 elliptical 2D footprint. The rasterizer determines which pixels overlap that
 footprint, orders contributions by depth, and alpha-composites their colors.
 
-For pixel \(p\), a simplified front-to-back compositing equation is:
+For pixel $p$, a simplified front-to-back compositing equation is:
 
 ```math
 \mathbf{C}(p)
@@ -127,11 +127,11 @@ T_i(p)
 
 Here:
 
-- \(M(p)\) is the number of projected Gaussians affecting pixel \(p\);
-- \(a_i(p)\) combines learned opacity with the value of the projected Gaussian
+- $M(p)$ is the number of projected Gaussians affecting pixel $p$;
+- $a_i(p)$ combines learned opacity with the value of the projected Gaussian
   footprint at the pixel;
-- \(\mathbf{c}_i(p)\) is the view-dependent color;
-- \(T_i(p)\) describes how much light remains after earlier Gaussians.
+- $\mathbf{c}_i(p)$ is the view-dependent color;
+- $T_i(p)$ describes how much light remains after earlier Gaussians.
 
 This differentiable rasterization process is efficient on a GPU because it
 uses explicit primitives rather than evaluating a large neural network at
