@@ -7,7 +7,7 @@ post-training Gaussian pruning, Pareto-front analysis, controlled robustness
 studies, and presentation tooling.
 
 The 24-session project roadmap is complete. For a method-first introduction,
-read the [detailed project article](docs/article.md).
+read the [detailed project article](https://github.com/salomonhotegni/pareto-3d-splat/blob/2543427e8801e522e64a1f30ae31147a044462fb/docs/article.md).
 
 ## Pareto-Splat Portfolio Assets
 
