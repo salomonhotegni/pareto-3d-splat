@@ -387,8 +387,8 @@ quietly averaging whatever files happen to exist.
 
 ### 6.1 PSNR
 
-For a rendered image \(\hat{\mathbf{I}}\) and reference image
-\(\mathbf{I}\), both scaled to \([0,1]\), mean squared error is:
+For a rendered image $\hat{\mathbf{I}}$ and reference image
+$\mathbf{I}$, both scaled to $[0,1]$, mean squared error is:
 
 ```math
 \mathrm{MSE}
@@ -444,8 +444,8 @@ The implementation follows GraphDeCo's RGB convention using:
 - an 11 by 11 Gaussian window;
 - Gaussian standard deviation 1.5;
 - zero-padded image boundaries;
-- \(C_1=0.01^2\);
-- \(C_2=0.03^2\).
+- $C_1=0.01^2$;
+- $C_2=0.03^2$.
 
 Higher SSIM is better.
 
