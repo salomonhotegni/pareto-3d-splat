@@ -1,5 +1,7 @@
 # Pareto-Splat
 
+[![CI](https://github.com/salomonhotegni/pareto-3d-splat/actions/workflows/main.yml/badge.svg)](https://github.com/salomonhotegni/pareto-3d-splat/actions/workflows/main.yml)
+
 Pareto-Splat is a reproducible research pipeline for studying quality, speed,
 and model-size trade-offs in
 [3D Gaussian Splatting](https://github.com/graphdeco-inria/gaussian-splatting).
