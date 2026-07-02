@@ -589,20 +589,18 @@ The output remains GraphDeCo-compatible:
 
 ### 8.2 Random fixed-budget pruning
 
-For target retention fraction \(r\):
+For target retention fraction $r$:
 
 ```math
-k
-=
-\operatorname{round}(rN).
+k = \text{round}(rN).
 ```
 
-Random pruning samples a size-\(k\) subset without replacement:
+Random pruning samples a $\text{size}-k$ subset without replacement:
 
 ```math
 S
 \sim
-\operatorname{Uniform}
+\text{Uniform}
 \left(
 \{S \subseteq \{1,\ldots,N\}: |S|=k\}
 \right).
@@ -624,7 +622,7 @@ the count.
 ### 8.3 Opacity-threshold pruning
 
 Threshold pruning keeps every Gaussian whose activated opacity exceeds
-\(\tau\):
+$\tau$:
 
 ```math
 m_i
@@ -656,14 +654,14 @@ Opacity top-k scores each Gaussian by:
 s_i = \alpha_i.
 ```
 
-It keeps exactly the \(k\) largest scores:
+It keeps exactly the $k$ largest scores:
 
 ```math
 m_i
 =
 \mathbf{1}
 \left[
-i \in \operatorname{TopK}(\{s_j\}_{j=1}^{N},k)
+i \in \text{TopK}(\{s_j\}_{j=1}^{N},k)
 \right].
 ```
 
@@ -672,7 +670,7 @@ deterministic relative to the original PLY order.
 
 Since sigmoid is monotonic, ranking by activated opacity gives the same order
 as ranking by raw logits. Activation is still useful conceptually and for
-thresholds because it expresses opacity on the familiar \((0,1)\) scale.
+thresholds because it expresses opacity on the familiar $(0,1)$ scale.
 
 Top-k is particularly suitable for matched-budget studies because random and
 importance-based methods retain exactly the same number of Gaussians.
