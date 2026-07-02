@@ -490,7 +490,7 @@ CUDA events are recorded immediately before and after
 elapsed times. This avoids the common mistake of measuring only asynchronous
 CPU launch overhead.
 
-For latency samples \(\ell_1,\ldots,\ell_K\), mean latency is:
+For latency samples $\ell_1,\ldots,\ell_K$, mean latency is:
 
 ```math
 \bar{\ell}
