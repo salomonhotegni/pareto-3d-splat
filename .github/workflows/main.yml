@@ -22,7 +22,6 @@ jobs:
 
     env:
       MPLBACKEND: Agg
-      MPLCONFIGDIR: ${{ runner.temp }}/matplotlib
       PIP_DISABLE_PIP_VERSION_CHECK: "1"
       PYTHONUNBUFFERED: "1"
 
@@ -41,6 +40,8 @@ jobs:
             .github/workflows/main.yml
 
       - name: Install CPU test dependencies
+        env:
+          MPLCONFIGDIR: ${{ runner.temp }}/matplotlib
         run: |
           mkdir -p "$MPLCONFIGDIR"
           python -m pip install --upgrade \
@@ -61,4 +62,6 @@ jobs:
           python -m pip install --editable .
 
       - name: Run test suite
+        env:
+          MPLCONFIGDIR: ${{ runner.temp }}/matplotlib
         run: python -m pytest -ra
